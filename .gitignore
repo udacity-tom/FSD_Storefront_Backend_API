@@ -1,0 +1,20 @@
+
+#Database access parameters
+.env
+
+
+#dependencies
+node_modules
+package-lock.json
+
+#production build
+dist
+
+#dev workspace
+.gitconfig
+FSD_Storefront_Backend_API.code-workspace
+
+#misc development files
+misc
+REQUIREMENTS.md
+migration.md
