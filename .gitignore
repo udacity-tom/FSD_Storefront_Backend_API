@@ -1,7 +1,5 @@
-
 #Database access parameters
 .env
-
 
 #dependencies
 node_modules
