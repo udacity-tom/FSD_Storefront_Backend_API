@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import client from '../database'
+import client from '../database';
+import jwt, { Jwt } from 'jsonwebtoken';
 
 //provides authentication functions, like: password encryption, JWT verification, etc.
 
@@ -34,6 +35,14 @@ async authenticate(username: string, password: string): Promise<String> {
 async hashPassword(password: string): Promise<string> {
     const hash = bcrypt.hashSync(password + pepper, parseInt(saltRounds!));
     return hash;
+}
+
+async authorise(username: string): Promise<string> {
+
+
+var token: string = jwt.sign({ user: username }, process.env.TOKEN_SECRET!);
+
+return token;
 }
 
 
