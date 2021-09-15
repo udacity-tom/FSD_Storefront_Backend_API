@@ -9,7 +9,7 @@ export type User = {
     username: string;
     firstname: string;
     lastname: string;
-    password: string;
+    password_hash: string;
 };
 
 export class UserStore {
@@ -28,15 +28,15 @@ export class UserStore {
         }
     }
 
-    async create(user: User): Promise<User[]> {
+    async create(user: User): Promise<User> {
         try {
             // console.log('user.ts: user ', user);
-            user.password = await auth.hashPassword(user.password);
+            user.password_hash = await auth.hashPassword(user.password_hash);
             // console.log('user.ts: user ', user);
             const conn = await client.connect();
             const sql = 'INSERT INTO users (username, firstname, lastname, password_hash) VALUES($1, $2, $3, $4) RETURNING *;';
 
-            const result = await conn.query(sql, [user.username, user.firstname, user.lastname, user.password]);
+            const result = await conn.query(sql, [user.username, user.firstname, user.lastname, user.password_hash]);
             // console.log('user.ts: result', result);
             conn.release();
             return result.rows[0];
@@ -63,7 +63,7 @@ export class UserStore {
     }
 
 
-    // async delete(): Promise<User[]> {
+    // async delete(): Promise<User> {
     //     try {
             
     //     } catch (err) {

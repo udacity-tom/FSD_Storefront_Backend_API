@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import jwt, { Jwt } from 'jsonwebtoken';
 import { User, UserStore } from "../models/user";
 import { AuthStore } from "../middleware/auth";
+import { nextTick } from 'process';
 
 const userStore = new UserStore;
 const auth = new AuthStore;
@@ -44,15 +45,24 @@ const create = async(req: Request, res: Response) => {
             username: req.body.username,
             firstname: req.body.firstname,
             lastname: req.body.lastname,
-            password: req.body.password
+            password_hash: req.body.password
         }
         console.log('users.ts: user value', user);
-        
-        
         const newUser = await userStore.create(user);
         console.log('users.ts: newUser ', newUser);
-        res.send(newUser);
-
+        
+        let jwtPayloadData: User = {
+            username: newUser.username,
+            firstname: newUser.firstname,
+            lastname: '',
+            password_hash: ''
+        }
+        
+        const token = await auth.createToken(jwtPayloadData);
+        // var token: string =  jwt.sign({ user: newUser }, process.env.TOKEN_SECRET!);
+        // var token: string =  jwt.sign({jwtPayloadData}, process.env.TOKEN_SECRET!);
+        console.log('users.ts: token returned', token);
+        res.send([newUser, token]);
 
     } catch (err) {
         res.status(400);
@@ -60,12 +70,14 @@ const create = async(req: Request, res: Response) => {
     }
 }
 
+// const destroy
 
 
 const authenticate = async (req: Request, res: Response) => {
     try {
-        const username = req.body.username; 
-        const password = req.body.password;
+        let {username, password} = req.body;
+        // const username = req.body.username; 
+        // const password = req.body.password;
 
         // try {
         //     jwt.verify(req.body.token, process.env.TOKEN_SECRET!);
@@ -88,6 +100,7 @@ const userRoutes = (app: express.Application) => {
     app.get('/users/:id', show);
     app.post('/users/create', create);
     app.post('/users/authenticate', authenticate);
+    // app.delete('/users/delete/:id', destroy);
 }
 
 export default userRoutes;
