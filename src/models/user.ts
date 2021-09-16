@@ -61,7 +61,6 @@ export class UserStore {
         } 
     }
 
-
     async delete(id: string): Promise<User> {
         try {
             console.log('user.ts/delete: id is ', id);
@@ -76,14 +75,4 @@ export class UserStore {
             throw new Error(`Cannot delete user with id = ${id}`);
         } 
     }
-
-    // async authenticate(username: string, password: string): Promise<String> {
-    //     try {
-    //         const result = auth.authenticate(username, password)
-    //         return result;
-    //     } catch (err) {
-    //         throw new Error('Unable to authenticate ${username}, error: ${err}');
-    //     }
-    // }
-
 }

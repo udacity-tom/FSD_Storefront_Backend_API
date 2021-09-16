@@ -16,6 +16,7 @@ FSD_Storefront_Backend_API.code-workspace
 misc
 REQUIREMENTS.md
 migration.md
+verifyJwt.ts
 
 #non-relevant project data Files
 .eslintignore

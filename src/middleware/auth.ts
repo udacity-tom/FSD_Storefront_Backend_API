@@ -87,14 +87,4 @@ async verifyAuthToken(
       res.status(401).json({message: 'Invalid Token!'});
     }
   }
-// async verifyJwt(jwtToken: string): Promise<string> {
-//      const validJwt: string | JwtPayload  = jwt.verify(jwtToken, process.env.TOKEN_SECRET!);
-//      if(validJwt) {
-//          return
-//      }
-//     }
-// async verifyJwt(jwtToken: string): Promise<string> {
-//      const validJwt: string | jwt.JwtPayload = jwt.verify(jwtToken, process.env.TOKEN_SECRET!);
-//      return validJwt;
-//     }
 }
