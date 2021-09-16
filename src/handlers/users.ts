@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import jwt, { Jwt } from 'jsonwebtoken';
 import { User, UserStore } from "../models/user";
 import { AuthStore } from "../middleware/auth";
-import { nextTick } from 'process';
+// import { nextTick } from 'process';
 
 const userStore = new UserStore;
 const auth = new AuthStore;
@@ -30,15 +30,6 @@ const show = async(req: Request, res: Response) => {
     }
 }
 
-// async authenticate(username: string, password: string): Promise<String> {
-//     try {
-//         const result = auth.authenticate(username, password)
-//         return result;
-//     } catch (err) {
-//         throw new Error('Unable to authenticate ${username}, error: ${err}');
-//     }
-// }
-
 const create = async(req: Request, res: Response) => {
     try {
         const user: User = {
@@ -56,11 +47,8 @@ const create = async(req: Request, res: Response) => {
             firstname: newUser.firstname,
             lastname: '',
             password_hash: ''
-        }
-        
+        }        
         const token = await auth.createToken(jwtPayloadData);
-        // var token: string =  jwt.sign({ user: newUser }, process.env.TOKEN_SECRET!);
-        // var token: string =  jwt.sign({jwtPayloadData}, process.env.TOKEN_SECRET!);
         console.log('users.ts: token returned', token);
         res.send([newUser, token]);
 
@@ -70,28 +58,28 @@ const create = async(req: Request, res: Response) => {
     }
 }
 
-// const destroy
-
-
 const authenticate = async (req: Request, res: Response) => {
     try {
-        let {username, password} = req.body;
-        // const username = req.body.username; 
-        // const password = req.body.password;
-
-        // try {
-        //     jwt.verify(req.body.token, process.env.TOKEN_SECRET!);
-        // } catch (err) {
-        //     res.status(401);
-        //     res.send('Invalid Token ${err}');
-        //     return; //exit authentication prcess
-        // }
+        const {username, password} = req.body;
+        console.log('users.ts: username', username);
         const userAuth = await auth.authenticate(username, password);
-        res.send(userAuth);
+        console.log('users.ts: userAuth', userAuth);
+        console.log('users.ts: userAuth[1]', userAuth);
+        res.send(userAuth);//returns jwt
 
     } catch (err) {
         res.status(400);
         res.send(err);
+    }
+}
+
+const destroy = async (req: Request, res: Response) => {
+    try {
+        const idToDelete = req.params.id;
+        const userDelete = userStore.delete(idToDelete);
+        res.send(userDelete);
+    } catch (err) {
+        res.status(400).send(err);
     }
 }
 
@@ -100,7 +88,8 @@ const userRoutes = (app: express.Application) => {
     app.get('/users/:id', show);
     app.post('/users/create', create);
     app.post('/users/authenticate', authenticate);
-    // app.delete('/users/delete/:id', destroy);
+    // app.post('/users/authenticate', authenticate);
+    app.delete('/users/delete/:id', auth.verifyAuthToken, destroy);
 }
 
 export default userRoutes;

@@ -1,4 +1,3 @@
-import { CONNREFUSED } from "dns";
 import client from "../database";
 import { AuthStore } from "../middleware/auth";
 
@@ -53,8 +52,8 @@ export class UserStore {
             const sql = 'SELECT * FROM users WHERE id=($1);';
             const conn = await client.connect();
             // const idNum = 
-            conn.release();
             const result = await conn.query(sql, [id]);
+            conn.release();
 
             return result.rows[0];
         } catch (err) {
@@ -63,13 +62,20 @@ export class UserStore {
     }
 
 
-    // async delete(): Promise<User> {
-    //     try {
-            
-    //     } catch (err) {
-            
-    //     } 
-    // }
+    async delete(id: string): Promise<User> {
+        try {
+            console.log('user.ts/delete: id is ', id);
+            const sql = 'DELETE FROM users WHERE id=($1);';
+            const conn = await client.connect();
+
+            const result = await conn.query(sql, [id]);
+            conn.release();
+            console.log('user.ts/delete: value of result.rows[0] ', result.rows[0]);
+            return result.rows[0];
+        } catch (err) {
+            throw new Error(`Cannot delete user with id = ${id}`);
+        } 
+    }
 
     // async authenticate(username: string, password: string): Promise<String> {
     //     try {
