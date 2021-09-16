@@ -63,15 +63,15 @@ export class UserStore {
 
     async delete(id: string): Promise<String> {
         try {
-            console.log('user.ts/delete: id is ', id);
+            // console.log('user.ts/delete: id is ', id);
             const feedback = await this.show(id);
-            console.log('user.ts/delete: feedback ', feedback);
+            // console.log('user.ts/delete: feedback ', feedback);
             const sql = 'DELETE FROM users WHERE id=($1);';
             const conn = await client.connect();
 
             const result = await conn.query(sql, [id]);
             conn.release();
-            console.log('user.ts/delete: value of result.rows[0] ', result.rows[0]);
+            // console.log('user.ts/delete: value of result.rows[0] ', result.rows[0]);
             // return `Success! User with id = ${id} was deleted`
             return `Success! User with id = ${id} was deleted, Username: ${feedback.username}, (${feedback.firstname} ${feedback.lastname})`
         } catch (err) {
