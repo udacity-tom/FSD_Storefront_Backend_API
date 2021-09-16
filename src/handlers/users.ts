@@ -76,8 +76,9 @@ const authenticate = async (req: Request, res: Response) => {
 const destroy = async (req: Request, res: Response) => {
     try {
         const idToDelete = req.params.id;
-        const userDelete = userStore.delete(idToDelete);
-        res.send(userDelete);
+        const userDelete = await userStore.delete(idToDelete);
+        console.log('users.ts/destroy: userDelete', userDelete);
+        res.json(userDelete);
     } catch (err) {
         res.status(400).send(err);
     }
