@@ -103,12 +103,11 @@ const destroy = async (req: Request, res: Response) => {
 }
 
 const userRoutes = (app: express.Application) => {
-    app.get('/users', index);
-    app.get('/users/:id', show);
-    app.post('/users/create', create);// == new user
+    app.get('/users', auth.verifyAuthToken, index);
+    app.get('/users/:id', auth.verifyAuthToken, show);
+    app.post('/users/create', auth.verifyAuthToken, create);// == new user
     app.post('/users/authenticate', authenticate); // == login
     app.post('/users/update/:id', auth.verifyAuthToken, update);
-    // app.post('/users/authenticate', authenticate);
     app.delete('/users/delete/:id', auth.verifyAuthToken, destroy);
 }
 
