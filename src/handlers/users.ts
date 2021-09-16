@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import jwt, { Jwt } from 'jsonwebtoken';
 import { User, UserStore } from "../models/user";
 import { AuthStore } from "../middleware/auth";
+import checkUserName from '../middleware/checkUserName';
 // import { nextTick } from 'process';
 
 const userStore = new UserStore;
@@ -105,7 +105,7 @@ const destroy = async (req: Request, res: Response) => {
 const userRoutes = (app: express.Application) => {
     app.get('/users', auth.verifyAuthToken, index);
     app.get('/users/:id', auth.verifyAuthToken, show);
-    app.post('/users/create', auth.verifyAuthToken, create);// == new user
+    app.post('/users/create', auth.verifyAuthToken, checkUserName, create);// == new user
     app.post('/users/authenticate', authenticate); // == login
     app.post('/users/update/:id', auth.verifyAuthToken, update);
     app.delete('/users/delete/:id', auth.verifyAuthToken, destroy);

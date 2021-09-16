@@ -1,5 +1,6 @@
 import client from "../database";
 import { AuthStore } from "../middleware/auth";
+import {Request, Response} from 'express';
 
 const auth = new AuthStore;
 
@@ -15,8 +16,8 @@ export class UserStore {
     async index(): Promise<User[]> {
         
         try {
-            const conn = await client.connect();
             const sql = 'SELECT * FROM users;';
+            const conn = await client.connect();
 
             const result = await conn.query(sql);
             conn.release();
@@ -27,22 +28,39 @@ export class UserStore {
         }
     }
 
+    async checkUserName(req: Request, res: Response, next: () => void) {
+        try {
+            const sql = 'SELECT * FROM users WHERE username = ($1);';
+            const conn = await client.connect(); 
+            const result = await conn.query(sql, [req.body.username]); 
+            conn.release();
+            console.log('user.ts: result.rows[0]',result.rows[0]);
+            if(result.rows[0] == undefined){
+                next();
+            }
+            res.status(400).json({message: `Something went wrong checking the username. The username isn't unique!`});
+        } catch (err) {
+            throw new Error(`Something went wrong checking username: ${req.body.username}`);
+        }
+    }
+    
     async create(user: User): Promise<User> {
         try {
             // console.log('user.ts: user ', user);
+            // const existingUser = await this.checkUserName(user.username);
             user.password_hash = await auth.hashPassword(user.password_hash);
             // console.log('user.ts: user ', user);
             const conn = await client.connect();
+
             const sql = 'INSERT INTO users (username, firstname, lastname, password_hash) VALUES($1, $2, $3, $4) RETURNING *;';
 
             const result = await conn.query(sql, [user.username, user.firstname, user.lastname, user.password_hash]);
             // console.log('user.ts: result', result);
             conn.release();
             return result.rows[0];
-
             //take supplied user and store in database, on success return user in json form
         } catch (err) {
-            throw new Error(`Something went wrong, try again. Error: ${err}`);
+            throw new Error(`Something went wrong, try again. Duplicate user account? Error: ${err}`);
         } 
     }
 
