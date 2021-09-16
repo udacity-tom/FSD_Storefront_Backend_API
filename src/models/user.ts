@@ -48,7 +48,7 @@ export class UserStore {
 
     async show(id: string): Promise<User> {
         try {
-            console.log('user.ts: id is ', id);
+            // console.log('user.ts: id is ', id);
             const sql = 'SELECT * FROM users WHERE id=($1);';
             const conn = await client.connect();
             // const idNum = 
@@ -59,6 +59,19 @@ export class UserStore {
         } catch (err) {
             throw new Error(`There is no user with ID ${id}. Error: ${err}`);
         } 
+    }
+    // async update(id: number, username: string, firstname: string, lastname: string){
+    async update(user: User): Promise<User> {
+        try {
+            const sql = 'UPDATE users SET username= ($1), firstname= ($2), lastname=($3) WHERE users.id = ($4) RETURNING *;';
+            const conn = await client.connect();
+            const result = await conn.query(sql, [user.username, user.firstname, user.lastname, user.id]);
+            conn.release();
+
+            return result.rows[0];
+        } catch (err) {
+            throw new Error(`Something went wrong with updating user with ID=${user.id} and name ${user.firstname, ' ',user.lastname}`);
+        }
     }
 
     async delete(id: string): Promise<String> {
