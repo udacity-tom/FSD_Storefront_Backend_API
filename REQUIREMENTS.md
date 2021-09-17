@@ -6,7 +6,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 ## API Endpoints
 #### Products
 - Index 
-    - Route: /products
+    -  ->Route: /products
 - Show
     - Route: /products/:id
 - Create [token required]
