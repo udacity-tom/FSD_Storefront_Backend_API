@@ -6,36 +6,35 @@ These are the notes from a meeting with the frontend developer that describe wha
 ## API Endpoints
 #### Products
 - Index 
-    -  ->Route: /products
+    - An INDEX Route: /products  [GET]
 - Show
-    - Route: /products/:id
+    - A SHOW Route: /products/:id  [GET]
 - Create [token required]
-    - Route: /products/create
+    - A CREATE Route: /products/create  [POST]
 - [OPTIONAL] Top 5 most popular products 
-    - Route: /products/top-5-products
+    - A Top 5 DASHBOARD Route: /products/top-5-products [GET]
 - [OPTIONAL] Products by category (args: product category)
-    - Route: /products/category/:category
+    - A CATEGORY Route: /products/category/:category  [GET]
 
 #### Users
 - Index [token required]
-    - Route: /users
+    - An INDEX Route: /users  [GET]
 - Show [token required]
-    - Route: /users/:id
+    - A SHOW Route: /users/:id [GET]
 - Create N[token required]
-    - Route: /users/create
+    - A CREATE Route: /users/create  [POST]
 
 > Additionally the following 'user' routes have been added (together with their modesl/handlers) to aid current/future implementation
 >- Authentication (uses users login details (username, password) to authorise and issues a fresh JWT. )
->   - Route: /users/authenticate
+>   - Route: /users/authenticate [POST]
 >- Delete [token required] (deletes a specific user from the users DB Table)
->   - Route: /users/delete/:id
+>   - Route: /users/delete/:id [GET]
 
 #### Orders
 - Current Order by user (args: user id)[token required]
-    - Route: /users/:id/orders/current
-    - Route: /users/:id/orders/active (*which route makes more sense?*)
+    - ARoute: /users/:id/orders/current [GET]
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
-    - Route /users/:id/orders/complete
+    - Route /users/:id/orders/complete [GET]
 
 ## Data Shapes
 #### Product
@@ -51,7 +50,12 @@ These are the notes from a meeting with the frontend developer that describe wha
 >|--|----|------|-------|
 >|SERIAL PRIMARY KEY|VARCHAR(64) NOT NULL|NUMERIC(8,2) NOT NULL|VARCHAR(64)|
 
-
+>CREATE TABLE products(
+id SERIAL PRIMARY KEY, 
+name VARCHAR(64) NOT NULL, 
+price NUMERIC(8, 2) NOT NULL, 
+category VARCHAR(64)
+);
 
 #### User
 - id
@@ -61,12 +65,17 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 >Suggested Table:
 >For the 'users' table we suggest including a unique username field as such: 
->|id|username|firstname|lastname|password|
+>|id|username (UNIQUE)|firstname|lastname|password|
 >|--|----|------|-------|------|
 >|SERIAL PRIMARY KEY|VARCHAR(64) NOT NULL|VARCHAR(64) NOT NULL|VARCHAR(64) NOT NULL|TEXT|
 
->NOTE: 
->CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(64) NOT NULL...etc) UNIQUE(username);
+>CREATE TABLE users(
+id SERIAL PRIMARY KEY, 
+username VARCHAR(64) NOT NULL, 
+firstname VARCHAR(64) NOT NULL,
+lastname VARCHAR(64) NOT NULL,
+pasword TEXT) 
+UNIQUE(username);
 
 #### Orders
 - id
@@ -79,10 +88,22 @@ These are the notes from a meeting with the frontend developer that describe wha
 >For the 'orders' table we suggest an appropriate table so: 
 >|id|user_id|status|
 >|--|----|------|
->SERIAL PRIMARY KEY|bigint REFERNCES users(id)|VARCHAR(20) NOT NULL|
+>SERIAL PRIMARY KEY|bigint REFERENCES users(id)|VARCHAR(20) NOT NULL|
 
+>CREATE TABLE orders(
+id SERIAL PRIMARY KEY, 
+user_id bigint REFERENCES users(id), 
+status VARCHAR(20) NOT NULL
+);
 
 >For an 'orders'/'product' JOIN table we suggest: 
 >|id (transaction ID)|product_id|quantity|order_id|
 >|--|----------|-------|------|
->|SERIAL PRIMARY KEY|bigint REFERNCES products(id)|integer|bigint REFERENCES orders(id)|
+>|SERIAL PRIMARY KEY|bigint REFERENCES products(id)|integer|bigint REFERENCES orders(id)|
+
+>CREATE TABLE order_products(
+id SERIAL PRIMARY KEY, 
+product_id bigint REFERENCES products(id), 
+quantity integer,
+order_id bitint REFERENCES orders(id)
+);
