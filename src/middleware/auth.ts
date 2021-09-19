@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import express from 'express';
 import { User } from '../models/user';
 
-//provides authentication functions, like: password encryption, JWT verification, etc.
+//This file provides authentication functions, like: password encryption, JWT verification, etc.
 
 dotenv.config();
 
@@ -21,12 +21,12 @@ async authenticate(username: string, password: string): Promise<String> {
     // console.log('auth.ts: passwordhash', result);
     if(result.rows.length) {
         const userPassword = result.rows[0].password_hash;
-        console.log('auth.ts: userPassword', userPassword);
-        console.log('auth.ts: result.rows[0]', result.rows[0]);
+        // console.log('auth.ts: userPassword', userPassword);
+        // console.log('auth.ts: result.rows[0]', result.rows[0]);
         const passwordCheck = bcrypt.compareSync(password + pepper, userPassword);
         // console.log('auth.ts: passwordCheck', passwordCheck);
         if (passwordCheck){
-            console.log('auth.ts: bcrypt succeded');
+            // console.log('auth.ts: bcrypt succeded');
             user.password_hash = '';
             user.lastname = '';
             const token = this.createToken(user);
@@ -47,7 +47,7 @@ async hashPassword(password: string): Promise<string> {
 // async authorise(req: Requsername: string): Promise<string> {
 async createToken(jwtPayloadData: User): Promise<string> {
     // const username: string = req.body.username;
-    console.log('auth.ts: jwtPayloadData', jwtPayloadData);
+    // console.log('auth.ts: jwtPayloadData', jwtPayloadData);
     const options = {
         expiresIn: '30d',
         subject: 'access'
@@ -62,7 +62,7 @@ async createToken(jwtPayloadData: User): Promise<string> {
 
 // async authorise(token: string): Promise<string> {
 async authorise(token: string): Promise<string> {
-    console.log('auth.ts: token', token);
+    // console.log('auth.ts: token', token);
     try {
         jwt.verify(token, process.env.TOKEN_SECRET!);
     } catch(err) {
@@ -74,10 +74,10 @@ async authorise(token: string): Promise<string> {
 async verifyAuthToken(req: express.Request, res: express.Response,next: () => void) {
     try {
       const authorisationHeader = String(req.headers.authorization);
-      console.log('auth.ts: authorisationsHeader value: ', authorisationHeader);
+    //   console.log('auth.ts: authorisationsHeader value: ', authorisationHeader);
       const jwtToken: string = authorisationHeader?.split(' ')[1];
       const decoded = jwt.verify(jwtToken, String(process.env.TOKEN_SECRET));
-      console.log('verifyJwt.ts: decoded value', decoded);
+    //   console.log('verifyJwt.ts: decoded value', decoded);
       next();
     } catch (err) {
       res.status(401).json({message: 'Invalid Token!'});
