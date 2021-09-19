@@ -49,7 +49,7 @@ async createToken(jwtPayloadData: User): Promise<string> {
     // const username: string = req.body.username;
     console.log('auth.ts: jwtPayloadData', jwtPayloadData);
     const options = {
-        expiresIn: '10h',
+        expiresIn: '30d',
         subject: 'access'
     }
     try {
@@ -71,11 +71,7 @@ async authorise(token: string): Promise<string> {
     return 'valid';
 }
 
-async verifyAuthToken(
-    req: express.Request,
-    res: express.Response,
-    next: () => void
-  ) {
+async verifyAuthToken(req: express.Request, res: express.Response,next: () => void) {
     try {
       const authorisationHeader = String(req.headers.authorization);
       console.log('auth.ts: authorisationsHeader value: ', authorisationHeader);
