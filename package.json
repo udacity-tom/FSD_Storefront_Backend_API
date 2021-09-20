@@ -7,7 +7,11 @@
     "start": "node src/server.ts",
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
     "test": "jasmine-ts",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "create-test":"npm run create-testdb-up && db-migrate --env test up && ENV=test jasmine-ts && npm run create-testdb-down",
+    "create-testdb-up":"db-migrate up:setup && db-migrate --env test up && db-migrate --env test up:test",
+    "create-testdb-down":"db-migrate --env test down:test && db-migrate --env test down && db-migrate down:setup"
+    
   },
   "author": "Udacity",
   "license": "ISC",
