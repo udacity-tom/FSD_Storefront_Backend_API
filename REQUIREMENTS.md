@@ -48,10 +48,10 @@ These are the notes from a meeting with the frontend developer that describe wha
 >
 >|id|name|price|category|
 >|--|----|------|-------|
->|SERIAL PRIMARY KEY|VARCHAR(64) NOT NULL|NUMERIC(8,2) NOT NULL|VARCHAR(64)|
+>|serial PRIMARY KEY|VARCHAR(64) NOT NULL|NUMERIC(8,2) NOT NULL|VARCHAR(64)|
 
 >CREATE TABLE products(
-id SERIAL PRIMARY KEY, 
+id serial PRIMARY KEY, 
 name VARCHAR(64) NOT NULL, 
 price NUMERIC(8, 2) NOT NULL, 
 category VARCHAR(64)
@@ -67,10 +67,10 @@ category VARCHAR(64)
 >For the 'users' table we suggest including a unique username field as such: 
 >|id|username (UNIQUE)|firstname|lastname|password|
 >|--|----|------|-------|------|
->|SERIAL PRIMARY KEY|VARCHAR(64) NOT NULL|VARCHAR(64) NOT NULL|VARCHAR(64) NOT NULL|TEXT|
+>|serial PRIMARY KEY|VARCHAR(64) NOT NULL|VARCHAR(64) NOT NULL|VARCHAR(64) NOT NULL|TEXT|
 
 >CREATE TABLE users(
-id SERIAL PRIMARY KEY, 
+id serial PRIMARY KEY, 
 username VARCHAR(64) NOT NULL, 
 firstname VARCHAR(64) NOT NULL,
 lastname VARCHAR(64) NOT NULL,
@@ -88,10 +88,10 @@ UNIQUE(username);
 >For the 'orders' table we suggest an appropriate table so: 
 >|id|user_id|status|
 >|--|----|------|
->SERIAL PRIMARY KEY|bigint REFERENCES users(id)|VARCHAR(20) NOT NULL|
+>serial PRIMARY KEY|bigint REFERENCES users(id)|VARCHAR(20) NOT NULL|
 
 >CREATE TABLE orders(
-id SERIAL PRIMARY KEY, 
+id serial PRIMARY KEY, 
 user_id bigint REFERENCES users(id), 
 status VARCHAR(20) NOT NULL
 );
@@ -99,10 +99,10 @@ status VARCHAR(20) NOT NULL
 >For an 'orders'/'product' JOIN table we suggest: 
 >|id (transaction ID)|product_id|quantity|order_id|
 >|--|----------|-------|------|
->|SERIAL PRIMARY KEY|bigint REFERENCES products(id)|integer|bigint REFERENCES orders(id)|
+>|serial PRIMARY KEY|bigint REFERENCES products(id)|integer|bigint REFERENCES orders(id)|
 
 >CREATE TABLE order_products(
-id SERIAL PRIMARY KEY, 
+id serial PRIMARY KEY, 
 product_id bigint REFERENCES products(id), 
 quantity integer,
 order_id bigint REFERENCES orders(id)
