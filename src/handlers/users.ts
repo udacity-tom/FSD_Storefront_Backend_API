@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import { User, UserStore } from '../models/user';
 import { AuthStore } from '../middleware/auth';
 import checkUserName from '../middleware/checkUserName';
-// import { nextTick } from 'process';
 
 const userStore = new UserStore();
 const auth = new AuthStore();
