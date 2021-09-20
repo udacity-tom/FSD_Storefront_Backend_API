@@ -12,14 +12,15 @@ const auth = new AuthStore();
 
 describe('Initial function availability tests->testing DB setup, DB, function existance, jasmine ', () => {
   describe('User model/handler tests functions exists', () => {
-    it('checks the index() methods exists', async () => {
+    it('checks the index() needs JWT ->401 returned', async () => {
       //   beforeAll(async () => {
       const response = await request.get('/users');
       //   console.log('response is: ', response);
-      expect(response.status).toBe(200);
+      console.log('No JWT!->Fail to access');
+      expect(response.status).toBe(401);
       //   });
     });
-    it('checks method exists', () => {
+    it('checks index method exists', () => {
       expect(store.index).toBeDefined();
     });
 
@@ -29,13 +30,15 @@ describe('Initial function availability tests->testing DB setup, DB, function ex
         .set('Authorization', 'Bearer ' + token);
       //   console.log('result is ', result);
       expect(result.status).toBe(200);
+      //   expect(result).toBe
     });
   });
-  describe('Auth functions exist', () => {
-    it('checks auth.authenticate() function exists ', () => {
+  describe('Auth functions exist, checks jwt is decoded', () => {
+    it('checks auth.authenticate() function exists ', async () => {
       const username = 'Bill';
       const password = 'password';
-      expect(auth.authenticate(username, password)).toBeDefined();
+      const result = await auth.authenticate(username, password);
+      expect(result).toBeDefined();
     });
   });
 });

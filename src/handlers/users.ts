@@ -10,7 +10,7 @@ const auth = new AuthStore();
 const index = async (req: Request, res: Response) => {
   try {
     const users = await userStore.index();
-    console.log('in users.ts');
+    // console.log('in users.ts');
     res.json(users);
   } catch (err) {
     res.status(400).json(err);
@@ -100,7 +100,7 @@ const destroy = async (req: Request, res: Response) => {
 };
 
 const userRoutes = (app: express.Application) => {
-  app.get('/users', index);
+  app.get('/users', auth.verifyAuthToken, index);
   app.get('/users/:id', auth.verifyAuthToken, show);
   app.post('/users/create', auth.verifyAuthToken, checkUserName, create); // == new user
   app.post('/users/authenticate', authenticate); // == login
