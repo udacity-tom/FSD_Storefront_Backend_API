@@ -52,10 +52,19 @@ describe('Initial function availability tests->testing DB setup, DB, function ex
       expect(result).toBeDefined();
     });
   });
-  describe('Checks product routes ', () => {
-    it('checks product.index() exists', async () => {
-      const result = await product.index();
-      expect(result).toBeDefined();
+  describe('Checks products Endpoint, etc are setup', () => {
+    describe('Checks product routes ', () => {
+      it('checks product.index() exists', async () => {
+        const result = await product.index();
+        console.log('products returned', result.length);
+        expect(result.length).toEqual(6);
+      });
     });
+    // describe('Lists products in test database', () => {
+    //     it('gets all products in test database (==6)', () => {
+    //         const result = await product.index();
+    //         expect(result).toEqual(6);
+    //     })
+    // });
   });
 });
