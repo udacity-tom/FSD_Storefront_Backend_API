@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import userRoutes from './handlers/users';
 import orderRoutes from './handlers/orders';
+import productRoutes from './handlers/products';
 
 const hostAddress = process.env.SERVER_ADDRESS || '127.0.0.1';
 const portAddress = process.env.SERVER_PORT || 3002;
@@ -18,6 +19,7 @@ app.get('/', function(req: Request, res: Response) {
 //handler routes
 userRoutes(app);
 orderRoutes(app);
+productRoutes(app);
 
 app.listen(portAddress, function() {
   console.log(`starting app on: ${address}`);
