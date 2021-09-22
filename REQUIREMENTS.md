@@ -6,9 +6,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 ## API Endpoints
 #### Products
 - Index 
-    - An INDEX Route: /products  [GET]
+    - An INDEX (READ) Route: /products  [GET]
 - Show
-    - A SHOW Route: /products/:id  [GET]
+    - A SHOW (READ) Route: /products/:id  [GET]
 - Create [token required]
     - A CREATE Route: /products/create  [POST]
 - [OPTIONAL] Top 5 most popular products 
@@ -24,7 +24,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Create N[token required]
     - A CREATE Route: /users/create  [POST]
 
-> Additionally the following 'user' routes have been added (together with their modesl/handlers) to aid current/future implementation
+> Additionally the following 'user' routes have been added (together with their models/handlers) to aid current/future implementation
 >- Authentication (uses users login details (username, password) to authorise and issues a fresh JWT. )
 >   - Route: /users/authenticate [POST]
 >- Delete [token required] (deletes a specific user from the users DB Table)
@@ -32,9 +32,24 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### Orders
 - Current Order by user (args: user id)[token required]
-    - ARoute: /users/:id/orders/current [GET]
+    - A SHOW Route: /users/:id/orders/current [GET]
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
     - Route /users/:id/orders/complete [GET]
+
+>Additionally the following 'orders' routes have been added (together with their models/handlers) to aid current/future implementation
+>- Show all orders
+>   - An INDEX (READ) Route: /users/orders
+>- Show only (user = id) orders
+>   -A SHOW (READ) Route: /users/:id/orders
+>- Show only single order for user
+>   -A SHOW (READ) Route: /users/:id/orders/:oid
+
+>- Create Order by user (args: user id->id, order id->oid) [token required] (Returns 'oid' in json body)
+>    - Route: /users/:id/orders/create/
+>- Close Order by user
+>- Add products to order (args: user id->id, order id->oid)
+>   - Route: /users/:id/orders/:oid/addProduct
+
 
 ## Data Shapes
 #### Product
