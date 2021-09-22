@@ -105,17 +105,17 @@ export class OrderStore {
   ): Promise<Order | string> {
     try {
       let orderIdTrue;
-      const conn = await client.connect();
-      const currentOpenOrders = await this.show(id); //List of all orders for user_id
       const sql =
         'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *;';
-      console.log('current open orders', currentOpenOrders);
+      const currentOpenOrders = await this.show(id); //List of all orders for user_id
+      //   console.log('current open orders', currentOpenOrders);
       //   if((await this.show(id)).filter(orderId));
       currentOpenOrders.filter(item => {
         if (item.id == Number(orderId)) {
           orderIdTrue = true;
         }
       });
+      const conn = await client.connect();
       if (!orderIdTrue) {
         conn.release();
         return `Order id ${orderId} does not match to user Id ${id}`;
