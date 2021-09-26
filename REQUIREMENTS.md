@@ -15,6 +15,11 @@ These are the notes from a meeting with the frontend developer that describe wha
     - A Top 5 DASHBOARD Route: /products/top-5-products [GET]
 - [OPTIONAL] Products by category (args: product category)
     - A CATEGORY Route: /products/category/:category  [GET]
+> Additionally the following additional 'products' routes have been added (together with their models/handlers) to aid current/future implementation
+>- Update [token required] (takes an updated set of 'Product' type parameters in body)
+>   - An UPDATE Route: /products/:id [POST]
+>- Delete [token required] (deletes a specific product id)
+>   -A DELETE Route: /products/:id/delete [DELETE]
 
 #### Users
 - Index [token required]
@@ -24,11 +29,11 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Create N[token required]
     - A CREATE Route: /users/create  [POST]
 
-> Additionally the following 'user' routes have been added (together with their models/handlers) to aid current/future implementation
+> Additionally the following additional 'user' routes have been added (together with their models/handlers) to aid current/future implementation
 >- Authentication (uses users login details (username, password) to authorise and issues a fresh JWT. )
 >   - Route: /users/authenticate [POST]
 >- Delete [token required] (deletes a specific user from the users DB Table)
->   - Route: /users/delete/:id [GET]
+>   -A DELETE Route: /users/delete/:id [DELETE]
 
 #### Orders
 - Current Order by user (args: user id)[token required]
@@ -36,7 +41,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
     - Route /users/:id/orders/complete [GET]
 
->Additionally the following 'orders' routes have been added (together with their models/handlers) to aid current/future implementation
+>Additionally the following additional 'orders' routes have been added (together with their models/handlers) to aid current/future implementation
 >- Show all orders
 >   - An INDEX (READ) Route: /users/orders  [GET]
 >- Show only (user = id) orders
@@ -45,10 +50,10 @@ These are the notes from a meeting with the frontend developer that describe wha
 >   -A SHOW (READ) Route: /users/:id/orders/:oid  [GET]
 
 >- Create Order by user (args: user id->id, order id->oid) [token required] (Returns 'oid' in json body)
->    - Route: /users/:id/orders/create/
+>    -A CREATE Route: /users/:id/orders/create/ [POST]
 >- Close Order by user
 >- Add products to order (args: user id->id, order id->oid)
->   - Route: /users/:id/orders/:oid/addProduct
+>   -A CREATE Route: /users/:id/orders/:oid/addProduct [POST]
 >-D
 
 
