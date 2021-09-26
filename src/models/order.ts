@@ -46,10 +46,10 @@ export class OrderStore {
       const hasOpenOrder = currentOpenOrders.filter(order => {
         if (order.id == Number(oid)) {
           return true;
-        } else return false;
+        }
       });
       if (hasOpenOrder.length == 0) {
-        return `User with ID=${id} doesn't have an order with ${oid}`;
+        return `User with ID = ${id} doesn't have an order with Order Id = ${oid}`;
       }
       const sql = 'SELECT * FROM order_products WHERE order_id=($1);';
       const conn = await client.connect();
@@ -63,18 +63,17 @@ export class OrderStore {
     }
   }
 
-  async create(order: Order): Promise<Order> {
+  async create(id: string, status: string): Promise<Order> {
     try {
       const sql =
         'INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *;';
       const conn = await client.connect();
-      const result = await conn.query(sql, [order.user_id, order.status]);
+      const result = await conn.query(sql, [id, status]);
+    //   console.log('result', result);
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(
-        `There was an error with order for ${order.user_id}. Error: ${err}`
-      );
+      throw new Error(`There was an error with order for ${id}. Error: ${err}`);
     }
   }
 
@@ -93,7 +92,7 @@ export class OrderStore {
     }
   }
 
-  async delete(id: string): Promise<string> {
+  async delete(id: string, oid: string): Promise<string> {
     try {
       const feedback: Order = await this.show(id)[0];
       const userDetails: User = await user.show(String(feedback.user_id));
