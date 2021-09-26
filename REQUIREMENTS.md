@@ -38,17 +38,18 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 >Additionally the following 'orders' routes have been added (together with their models/handlers) to aid current/future implementation
 >- Show all orders
->   - An INDEX (READ) Route: /users/orders
+>   - An INDEX (READ) Route: /users/orders  [GET]
 >- Show only (user = id) orders
->   -A SHOW (READ) Route: /users/:id/orders
+>   -A SHOW (READ) Route: /users/:id/orders  [GET]
 >- Show only single order for user
->   -A SHOW (READ) Route: /users/:id/orders/:oid
+>   -A SHOW (READ) Route: /users/:id/orders/:oid  [GET]
 
 >- Create Order by user (args: user id->id, order id->oid) [token required] (Returns 'oid' in json body)
 >    - Route: /users/:id/orders/create/
 >- Close Order by user
 >- Add products to order (args: user id->id, order id->oid)
 >   - Route: /users/:id/orders/:oid/addProduct
+>-D
 
 
 ## Data Shapes
