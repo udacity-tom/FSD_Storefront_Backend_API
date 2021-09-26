@@ -37,11 +37,36 @@ const create = async (req: Request, res: Response) => {
   }
 };
 
+const update = async (req: Request, res: Response) => {
+  const updatedProductDetails: Product = {
+    name: req.body.name,
+    price: Number(req.body.price),
+    category: req.body.category,
+    id: req.body.id
+  };
+  try {
+    const updatedProduct = await productStore.update(updatedProductDetails);
+    res.json(updatedProduct);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+const destroy = async (req: Request, res: Response) => {
+  try {
+    const productDelete = await productStore.delete(req.params.id);
+    res.json(productDelete);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
 const productRoutes = (app: express.Application) => {
   app.get('/products', index);
   app.get('/products/:id', show);
   app.post('/products/create', create);
-  //   app.delete('/products/:id/delete', destroy);
+  app.post('/products/:id', update);
+  app.delete('/products/:id/delete', destroy);
 };
 
 export default productRoutes;
