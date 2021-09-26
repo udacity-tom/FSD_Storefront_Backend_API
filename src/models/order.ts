@@ -27,6 +27,19 @@ export class OrderStore {
 
   async show(id: string): Promise<Order[]> {
     try {
+      const sql = 'SELECT * FROM orders WHERE id=($1);';
+      const conn = await client.connect();
+      const result = await conn.query(sql, [id]);
+      conn.release();
+      return result.rows;
+    } catch (err) {
+      throw new Error(
+        `There was an error with finding orders for user ID=${id}. Erro: ${err}`
+      );
+    }
+  }
+  async showUserOrders(id: string): Promise<Order[]> {
+    try {
       const sql = 'SELECT * FROM orders WHERE user_id=($1);';
       const conn = await client.connect();
       const result = await conn.query(sql, [id]);
@@ -42,7 +55,7 @@ export class OrderStore {
   async showOrder(id: string, oid: string): Promise<Order[] | string> {
     //checks for orders for users-> then returns products in order
     try {
-      const currentOpenOrders = await this.show(id);
+      const currentOpenOrders = await this.showUserOrders(id);
       const hasOpenOrder = currentOpenOrders.filter(order => {
         if (order.id == Number(oid)) {
           return true;
@@ -69,7 +82,7 @@ export class OrderStore {
         'INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *;';
       const conn = await client.connect();
       const result = await conn.query(sql, [id, status]);
-    //   console.log('result', result);
+      //   console.log('result', result);
       conn.release();
       return result.rows[0];
     } catch (err) {
@@ -94,15 +107,21 @@ export class OrderStore {
 
   async delete(id: string, oid: string): Promise<string> {
     try {
-      const feedback: Order = await this.show(id)[0];
+      //   console.log('id', id, 'oid', oid);
+      const feedback: Order = (await this.show(oid))[0];
+      //   console.log('feedback', feedback);
       const userDetails: User = await user.show(String(feedback.user_id));
+      const adminDetails: User = await user.show(id);
       const sql = 'DELETE FROM orders WHERE id=($1);';
       const conn = await client.connect();
-      const result = await conn.query(sql, [id]);
+      const result = await conn.query(sql, [oid]);
       conn.release();
-      return `Success! Your order with id=${id} was deleted. Order ${id} was for ${userDetails.username} with name: ${userDetails.firstname} ${userDetails.lastname}`;
+      console.log('result', result);
+      if (result.rows.length == 0) {
+        return `Success! Your order with id = ${oid} was deleted by ${adminDetails.username} (${adminDetails.firstname}, ${adminDetails.lastname}). Order ${oid} was for ${userDetails.username} with name: ${userDetails.firstname} ${userDetails.lastname}`;
+      }
     } catch (err) {
-      throw new Error(`There was a problem deleting order with id=${id}`);
+      throw new Error(`There was a problem deleting order with id = ${id}`);
     }
   }
 

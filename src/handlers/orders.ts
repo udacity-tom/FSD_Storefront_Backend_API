@@ -36,16 +36,8 @@ const create = async (req: Request, res: Response) => {
   try {
     let status: string = req.body.status;
     if (status == undefined) {
-      status = 'open';
+      status = 'active';
     }
-    // console.log(
-    //   'user id ',
-    //   req.params.id,
-    //   'typeof id',
-    //   typeof req.params.id,
-    //   'status',
-    //   status
-    // );
     const orders = await orderStore.create(req.params.id, status);
     // console.log('orders ', orders);
     res.json(orders);
@@ -56,8 +48,9 @@ const create = async (req: Request, res: Response) => {
 
 const destroy = async (req: Request, res: Response) => {
   try {
-    const oidToDelte = req.params.oid;
-    const orderToDelete = await orderStore.delete(req.params.id, oidToDelte);
+    const oidToDelete = req.params.oid;
+    console.log('req.params.id',req.params.id,'req.params.oid',req.params.oid);
+    const orderToDelete = await orderStore.delete(req.params.id, oidToDelete);
     res.json(orderToDelete);
   } catch (err) {
     res.status(400).send(err);
@@ -88,7 +81,7 @@ const orderRoutes = (app: express.Application) => {
     addProduct
   ); //shows only order (oid) for user (id)
   app.post('/users/:id/orders/create', create);
-  app.post('/users/:id/orders/delete/:oid', destroy);
+  app.delete('/users/:id/orders/:oid', destroy);
 };
 
 export default orderRoutes;
