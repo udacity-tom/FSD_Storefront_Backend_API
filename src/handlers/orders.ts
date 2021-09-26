@@ -49,7 +49,7 @@ const addProduct = async (req: Request, res: Response) => {
 const orderRoutes = (app: express.Application) => {
   app.get('/users/orders', index); //show all orders
   app.get('/users/:id/orders/', show); //show orders for user (id)
-  app.get('/users/:id/orders/:oid', showOrder); //shows only order (oid) for user (id)
+  app.get('/users/:id/orders/:oid', showOrder); //shows products for user (id) with order (oid)
   app.post('/users/:id/orders/:oid/add-product', addProduct); //shows only order (oid) for user (id)
   //   app.post('/users/:id/orders/create', create);
   //   app.get('/users/:id/orders/:oid/')

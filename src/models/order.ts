@@ -39,11 +39,21 @@ export class OrderStore {
     }
   }
 
-  async showOrder(id: string, oid: string): Promise<Order[]> {
+  async showOrder(id: string, oid: string): Promise<Order[] | string> {
+    //checks for orders for users-> then returns products in order
     try {
-      const sql = 'SELECT * FROM orders WHERE user_id=($1) AND id=($2);';
+      const currentOpenOrders = await this.show(id);
+      const hasOpenOrder = currentOpenOrders.filter(order => {
+        if (order.id == Number(oid)) {
+          return true;
+        } else return false;
+      });
+      if (hasOpenOrder.length == 0) {
+        return `User with ID=${id} doesn't have an order with ${oid}`;
+      }
+      const sql = 'SELECT * FROM order_products WHERE order_id=($1);';
       const conn = await client.connect();
-      const result = await conn.query(sql, [id, oid]);
+      const result = await conn.query(sql, [oid]);
       conn.release();
       return result.rows;
     } catch (err) {
@@ -104,23 +114,26 @@ export class OrderStore {
     productId: string
   ): Promise<Order | string> {
     try {
-      let orderIdTrue;
+      let orderIdTrue, orderOpen;
       const sql =
         'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *;';
       const currentOpenOrders = await this.show(id); //List of all orders for user_id
-      //   console.log('current open orders', currentOpenOrders);
-      //   if((await this.show(id)).filter(orderId));
-      currentOpenOrders.filter(item => {
-        if (item.id == Number(orderId)) {
+      currentOpenOrders.filter(order => {
+        if (order.id == Number(orderId)) {
           orderIdTrue = true;
+          if (order.status == 'active') {
+            orderOpen = true;
+          }
         }
       });
-      const conn = await client.connect();
       if (!orderIdTrue) {
-        conn.release();
         return `Order id ${orderId} does not match to user Id ${id}`;
       }
+      if (!orderOpen) {
+        return `Order id ${orderId} has been closed! Order status is marked as closed`;
+      }
 
+      const conn = await client.connect();
       const result = await conn.query(sql, [quantity, orderId, productId]);
       conn.release();
       return result.rows[0];
