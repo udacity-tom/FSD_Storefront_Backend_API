@@ -1,9 +1,6 @@
 import client from '../database';
-// import { AuthStore } from '../middleware/auth';
-// import { Request, Response } from 'express';
 import { User, UserStore } from './user';
 
-// const auth = new AuthStore();
 const user = new UserStore();
 
 export type Order = {
@@ -15,7 +12,7 @@ export type Order = {
 export class OrderStore {
   async index(): Promise<Order[]> {
     try {
-      const sql = 'SELECT * FROM orders;';
+      const sql = 'SELECT * FROM orders ORDER BY id ASC;';
       const conn = await client.connect();
       const result = await conn.query(sql);
       conn.release();
@@ -38,16 +35,16 @@ export class OrderStore {
       );
     }
   }
-  async showUserOrders(id: string): Promise<Order[]> {
+  async showUserOrders(uid: string): Promise<Order[]> {
     try {
       const sql = 'SELECT * FROM orders WHERE user_id=($1);';
       const conn = await client.connect();
-      const result = await conn.query(sql, [id]);
+      const result = await conn.query(sql, [uid]);
       conn.release();
       return result.rows;
     } catch (err) {
       throw new Error(
-        `There was an error with finding orders for user ID=${id}. Erro: ${err}`
+        `There was an error with finding orders for user ID=${uid}. Erro: ${err}`
       );
     }
   }
@@ -82,7 +79,6 @@ export class OrderStore {
         'INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *;';
       const conn = await client.connect();
       const result = await conn.query(sql, [id, status]);
-      //   console.log('result', result);
       conn.release();
       return result.rows[0];
     } catch (err) {
@@ -107,17 +103,13 @@ export class OrderStore {
 
   async delete(id: string, oid: string): Promise<string> {
     try {
-      //   console.log('id', id, 'oid', oid);
       const feedback: Order = (await this.show(oid))[0];
-      //   console.log('feedback', feedback);
       const userDetails: User = await user.show(String(feedback.user_id));
       const adminDetails: User = await user.show(id);
       const sql = 'DELETE FROM orders WHERE id=($1);';
       const conn = await client.connect();
       const result = await conn.query(sql, [oid]);
       conn.release();
-      console.log('result', result);
-      //   if (result.rows.length == 0) {
       return `${
         result.rows.length == 0 ? 'Success!' : 'oops'
       } Your order with id = ${oid} was deleted by ${adminDetails.username} (${
@@ -125,7 +117,6 @@ export class OrderStore {
       }, ${adminDetails.lastname}). Order ${oid} was for ${
         userDetails.username
       } with name: ${userDetails.firstname} ${userDetails.lastname}`;
-      // }
     } catch (err) {
       throw new Error(`There was a problem deleting order with id = ${id}`);
     }
@@ -141,7 +132,7 @@ export class OrderStore {
       let orderIdTrue, orderOpen;
       const sql =
         'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *;';
-      const currentOpenOrders = await this.show(id); //List of all orders for user_id
+      const currentOpenOrders = await this.showUserOrders(id); //List of all orders for user_id
       currentOpenOrders.filter(order => {
         if (order.id == Number(orderId)) {
           orderIdTrue = true;
@@ -156,7 +147,6 @@ export class OrderStore {
       if (!orderOpen) {
         return `Order id ${orderId} has been closed! Order status is marked as closed`;
       }
-
       const conn = await client.connect();
       const result = await conn.query(sql, [quantity, orderId, productId]);
       conn.release();

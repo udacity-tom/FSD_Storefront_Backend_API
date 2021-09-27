@@ -16,7 +16,7 @@ const index = async (req: Request, res: Response) => {
 
 const show = async (req: Request, res: Response) => {
   try {
-    const orders = await orderStore.show(req.params.id);
+    const orders = await orderStore.show(req.params.oid);
     res.json(orders);
   } catch (err) {
     res.status(400).json(err);
@@ -32,6 +32,15 @@ const showOrder = async (req: Request, res: Response) => {
   }
 };
 
+const showUserOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await orderStore.showUserOrders(req.params.id);
+    res.json(orders);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
 const create = async (req: Request, res: Response) => {
   try {
     let status: string = req.body.status;
@@ -39,7 +48,6 @@ const create = async (req: Request, res: Response) => {
       status = 'active';
     }
     const orders = await orderStore.create(req.params.id, status);
-    // console.log('orders ', orders);
     res.json(orders);
   } catch (err) {
     res.status(400).json(err);
@@ -49,12 +57,6 @@ const create = async (req: Request, res: Response) => {
 const destroy = async (req: Request, res: Response) => {
   try {
     const oidToDelete = req.params.oid;
-    // console.log(
-    //   'req.params.id',
-    //   req.params.id,
-    //   'req.params.oid',
-    //   req.params.oid
-    // );
     const orderToDelete = await orderStore.delete(req.params.id, oidToDelete);
     res.json(orderToDelete);
   } catch (err) {
@@ -77,16 +79,18 @@ const addProduct = async (req: Request, res: Response) => {
 };
 
 const orderRoutes = (app: express.Application): void => {
-  app.get('/users/orders', auth.verifyAuthToken, index); //show all orders
-  app.get('/users/:id/orders/', auth.verifyAuthToken, show); //show orders for user (id)
-  app.get('/users/:id/orders/:oid', auth.verifyAuthToken, showOrder); //shows products for user (id) with order (oid)
+  app.get('/orders', auth.verifyAuthToken, index); //show all orders
+  app.get('/orders/:oid', auth.verifyAuthToken, show); //show only order
+  app.get('/users/:id/orders/', auth.verifyAuthToken, showUserOrders); //show current orders for user (id)
+  app.get('/users/:id/orders/:oid', auth.verifyAuthToken, showOrder); //shows details of order for user (id) with order (oid)
+  app.post('/users/:id/orders/create', create);
   app.post(
     '/users/:id/orders/:oid/add-product',
     auth.verifyAuthToken,
     addProduct
-  ); //shows only order (oid) for user (id)
-  app.post('/users/:id/orders/create', create);
+  );
   app.delete('/users/:id/orders/:oid', destroy);
+  //   app.post('/users/:id/orders/create', create);
 };
 
 export default orderRoutes;
