@@ -12,7 +12,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Create [token required]
     - A CREATE Route: /products/create  [POST]
 - [OPTIONAL] Top 5 most popular products 
-    - A Top 5 DASHBOARD Route: /products/top-5-products [GET]
+    - A Top 5 DASHBOARD Route: /products/info/top-5-products [GET]
 - [OPTIONAL] Products by category (args: product category)
     - A CATEGORY Route: /products/category/:category  [GET]
 > Additionally the following additional 'products' routes have been added (together with their models/handlers) to aid current/future implementation
@@ -39,7 +39,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Current Order by user (args: user id)[token required]
     - A SHOW Route: /users/:id/orders/current [GET]
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
-    - Route /users/:id/orders/complete [GET]
+    - Route /users/:id/orders/complete/all [GET]
 
 >Additionally the following additional 'orders' routes have been added (together with their models/handlers) to aid current/future implementation
 >- Show all orders
