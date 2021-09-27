@@ -10,7 +10,8 @@ import { User } from '../models/user';
 dotenv.config();
 
 const pepper = process.env.BCRYPT_PASSWORD;
-const saltRounds = process.env.SALT_ROUNDS;
+const saltRounds = Number(process.env.SALT_ROUNDS);
+const tokenSecret = String(process.env.TOKEN_SECRET);
 
 export class AuthStore {
   async authenticate(username: string, password: string): Promise<string> {
@@ -18,21 +19,15 @@ export class AuthStore {
     const sql = 'SELECT * FROM users WHERE username = ($1)';
     const result = await conn.query(sql, [username]);
     const user: User = result.rows[0];
-    // console.log('auth.ts: passwordhash', result);
     if (result.rows.length) {
       const userPassword = result.rows[0].password;
-      // console.log('auth.ts: userPassword', userPassword);
-      // console.log('auth.ts: result.rows[0]', result.rows[0]);
       const passwordCheck = bcrypt.compareSync(password + pepper, userPassword);
-      // console.log('auth.ts: passwordCheck', passwordCheck);
       if (passwordCheck) {
-        // console.log('auth.ts: bcrypt succeded');
         user.password = '';
         user.lastname = '';
         const token = this.createToken(user);
         return token;
       } else {
-        // console.log('auth.ts: bcrypt failed');
         return 'Failure-login refused, try again';
       }
     }
@@ -40,14 +35,11 @@ export class AuthStore {
   }
 
   async hashPassword(password: string): Promise<string> {
-    const hash = bcrypt.hashSync(password + pepper, parseInt(saltRounds!));
+    const hash = bcrypt.hashSync(password + pepper, saltRounds);
     return hash;
   }
 
-  // async authorise(req: Requsername: string): Promise<string> {
   async createToken(jwtPayloadData: User): Promise<string> {
-    // const username: string = req.body.username;
-    // console.log('auth.ts: jwtPayloadData', jwtPayloadData);
     const options = {
       expiresIn: '30d',
       subject: 'access'
@@ -56,7 +48,7 @@ export class AuthStore {
       // eslint-disable-next-line no-var
       var token: string = jwt.sign(
         jwtPayloadData,
-        process.env.TOKEN_SECRET!,
+        String(process.env.TOKEN_SECRET),
         options
       );
     } catch (err) {
@@ -65,11 +57,9 @@ export class AuthStore {
     return token;
   }
 
-  // async authorise(token: string): Promise<string> {
   async authorise(token: string): Promise<string> {
-    // console.log('auth.ts: token', token);
     try {
-      jwt.verify(token, process.env.TOKEN_SECRET!);
+      jwt.verify(token, tokenSecret);
     } catch (err) {
       throw new Error(`Invalid Token!!`);
     }
@@ -83,10 +73,8 @@ export class AuthStore {
   ): Promise<void> {
     try {
       const authorisationHeader = String(req.headers.authorization);
-      //   console.log('auth.ts: authorisationsHeader value: ', authorisationHeader);
       const jwtToken: string = authorisationHeader.split(' ')[1];
-      const decoded = jwt.verify(jwtToken, String(process.env.TOKEN_SECRET));
-      //   console.log('auth.ts: decoded jwt value', decoded);
+      const decoded = jwt.verify(jwtToken, tokenSecret);
       if (decoded) {
         console.log('jwt decoded');
       }
