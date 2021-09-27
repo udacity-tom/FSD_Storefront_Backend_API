@@ -42,5 +42,6 @@ INSERT INTO orders (
     5, 
     'active', 
     '2'
-);
--- ALTER SEQUENCE id RESTART WITH 6;
+);\n
+ALTER SEQUENCE id RESTART WITH 6;
+-- ALTER SEQUENCE id_seq RESTART WITH 6;
