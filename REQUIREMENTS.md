@@ -37,24 +37,24 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### Orders
 - Current Order by user (args: user id)[token required]
-    - A SHOW Route: /users/:id/orders/current [GET]
+    - A SHOW Route: /users/:id/orders [GET]
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
     - Route /users/:id/orders/complete/all [GET]
 
 >Additionally the following additional 'orders' routes have been added (together with their models/handlers) to aid current/future implementation
->- Show all orders
->   - An INDEX (READ) Route: /users/orders  [GET]
->- Show only (user = id) orders
->   -A SHOW (READ) Route: /users/:id/orders  [GET]
->- Show only single order for user
+>- Show all orders [token required]
+>   - An INDEX (READ) Route: /orders  [GET]
+>- Show only (args: order (oid)) specific orders [token required]
+>   -A SHOW (READ) Route: /orders/:oid  [GET]
+>- shows details of order (args: user (id),  order (oid)) [token required]
 >   -A SHOW (READ) Route: /users/:id/orders/:oid  [GET]
 
->- Create Order by user (args: user id->id, order id->oid) [token required] (Returns 'oid' in json body)
+>- Create Order by user (args: user id) [token required] (Returns order details in json body)
 >    -A CREATE Route: /users/:id/orders/create/ [POST]
->- Close Order by user
->- Add products to order (args: user id->id, order id->oid)
->   -A CREATE Route: /users/:id/orders/:oid/addProduct [POST]
->-D
+>- Add products to order (args: user id->id, order id->oid)  [token required]
+>   -A CREATE Route: /users/:id/orders/:oid/add-product [POST]
+>- Delete Order (args: user id (id) order id (oid))   [token required]
+>   -A DELETE Route: /users/:id/orders/:oid [DELETE]
 
 
 ## Data Shapes
