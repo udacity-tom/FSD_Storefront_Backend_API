@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import client from '../database';
 
-// async checkUserName(req: Request, res: Response, next: () => void) {
 const checkUserName = async (
   req: Request,
   res: Response,
@@ -12,7 +11,6 @@ const checkUserName = async (
     const conn = await client.connect();
     const result = await conn.query(sql, [req.body.username]);
     conn.release();
-    console.log('checkUserName.ts: result.rows[0]', result.rows[0]);
     if (result.rows[0] == undefined) {
       next();
     } else {
