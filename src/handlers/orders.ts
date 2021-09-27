@@ -80,17 +80,16 @@ const addProduct = async (req: Request, res: Response) => {
 
 const orderRoutes = (app: express.Application): void => {
   app.get('/orders', auth.verifyAuthToken, index); //show all orders
-  app.get('/orders/:oid', auth.verifyAuthToken, show); //show only order
+  app.get('/orders/:oid', auth.verifyAuthToken, show); //show only one order
   app.get('/users/:id/orders/', auth.verifyAuthToken, showUserOrders); //show current orders for user (id)
   app.get('/users/:id/orders/:oid', auth.verifyAuthToken, showOrder); //shows details of order for user (id) with order (oid)
-  app.post('/users/:id/orders/create', create);
+  app.post('/users/:id/orders/create', auth.verifyAuthToken, create);
   app.post(
     '/users/:id/orders/:oid/add-product',
     auth.verifyAuthToken,
     addProduct
   );
-  app.delete('/users/:id/orders/:oid', destroy);
-  //   app.post('/users/:id/orders/create', create);
+  app.delete('/users/:id/orders/:oid', auth.verifyAuthToken, destroy);
 };
 
 export default orderRoutes;
