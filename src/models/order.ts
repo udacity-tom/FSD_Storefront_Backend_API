@@ -1,9 +1,9 @@
 import client from '../database';
-import { AuthStore } from '../middleware/auth';
-import { Request, Response } from 'express';
+// import { AuthStore } from '../middleware/auth';
+// import { Request, Response } from 'express';
 import { User, UserStore } from './user';
 
-const auth = new AuthStore();
+// const auth = new AuthStore();
 const user = new UserStore();
 
 export type Order = {
@@ -117,9 +117,15 @@ export class OrderStore {
       const result = await conn.query(sql, [oid]);
       conn.release();
       console.log('result', result);
-      if (result.rows.length == 0) {
-        return `Success! Your order with id = ${oid} was deleted by ${adminDetails.username} (${adminDetails.firstname}, ${adminDetails.lastname}). Order ${oid} was for ${userDetails.username} with name: ${userDetails.firstname} ${userDetails.lastname}`;
-      }
+      //   if (result.rows.length == 0) {
+      return `${
+        result.rows.length == 0 ? 'Success!' : 'oops'
+      } Your order with id = ${oid} was deleted by ${adminDetails.username} (${
+        adminDetails.firstname
+      }, ${adminDetails.lastname}). Order ${oid} was for ${
+        userDetails.username
+      } with name: ${userDetails.firstname} ${userDetails.lastname}`;
+      // }
     } catch (err) {
       throw new Error(`There was a problem deleting order with id = ${id}`);
     }

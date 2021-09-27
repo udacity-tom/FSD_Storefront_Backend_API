@@ -98,11 +98,11 @@ const destroy = async (req: Request, res: Response) => {
   }
 };
 
-const userRoutes = (app: express.Application) => {
+const userRoutes = (app: express.Application): void => {
   app.get('/users', auth.verifyAuthToken, index);
   app.get('/users/:id', auth.verifyAuthToken, show);
   app.post('/users/create', auth.verifyAuthToken, checkUserName, create); // == new user
-  app.post('/users/authenticate', authenticate); // == login
+  app.post('/users/authenticate', authenticate); // == login & issue JWT
   app.post('/users/update/:id', auth.verifyAuthToken, update);
   app.delete('/users/delete/:id', auth.verifyAuthToken, destroy);
 };

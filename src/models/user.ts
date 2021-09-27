@@ -128,7 +128,11 @@ export class UserStore {
       conn.release();
       // console.log('user.ts/delete: value of result.rows[0] ', result.rows[0]);
       // return `Success! User with id = ${id} was deleted`
-      return `Success! User with id = ${id} was deleted, Username: ${feedback.username}, (${feedback.firstname} ${feedback.lastname})`;
+      return `${
+        result.rows.length == 0 ? 'Success!' : 'oops'
+      } User with id = ${id} was deleted, Username: ${feedback.username}, (${
+        feedback.firstname
+      } ${feedback.lastname})`;
     } catch (err) {
       throw new Error(`Cannot delete user with id = ${id}`);
     }

@@ -1,8 +1,8 @@
 import client from '../database';
-import { AuthStore } from '../middleware/auth';
-import { Request, Response } from 'express';
+// import { AuthStore } from '../middleware/auth';
+// import { Request, Response } from 'express';
 
-const auth = new AuthStore();
+// const auth = new AuthStore();
 
 export type Product = {
   id?: number;
@@ -96,7 +96,11 @@ export class ProductStore {
       conn.release();
       // console.log('user.ts/delete: value of result.rows[0] ', result.rows[0]);
       // return `Success! User with id = ${id} was deleted`
-      return `Success! Prouct with id = ${id} was deleted, Product name: ${feedback.name}, (${feedback.price} ${feedback.category})`;
+      return `${
+        result.rows.length == 0 ? 'Success!' : 'oops'
+      }  Product with id = ${id} was deleted, Product name: ${
+        feedback.name
+      }, (${feedback.price} ${feedback.category})`;
     } catch (err) {
       throw new Error(`Cannot delete user with id = ${id}`);
     }

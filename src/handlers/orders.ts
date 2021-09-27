@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { Order, OrderStore } from '../models/order';
+import { OrderStore } from '../models/order';
 import { AuthStore } from '../middleware/auth';
 
 const orderStore = new OrderStore();
@@ -49,7 +49,12 @@ const create = async (req: Request, res: Response) => {
 const destroy = async (req: Request, res: Response) => {
   try {
     const oidToDelete = req.params.oid;
-    console.log('req.params.id',req.params.id,'req.params.oid',req.params.oid);
+    // console.log(
+    //   'req.params.id',
+    //   req.params.id,
+    //   'req.params.oid',
+    //   req.params.oid
+    // );
     const orderToDelete = await orderStore.delete(req.params.id, oidToDelete);
     res.json(orderToDelete);
   } catch (err) {
@@ -71,7 +76,7 @@ const addProduct = async (req: Request, res: Response) => {
   }
 };
 
-const orderRoutes = (app: express.Application) => {
+const orderRoutes = (app: express.Application): void => {
   app.get('/users/orders', auth.verifyAuthToken, index); //show all orders
   app.get('/users/:id/orders/', auth.verifyAuthToken, show); //show orders for user (id)
   app.get('/users/:id/orders/:oid', auth.verifyAuthToken, showOrder); //shows products for user (id) with order (oid)

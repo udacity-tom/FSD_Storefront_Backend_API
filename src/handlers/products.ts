@@ -1,4 +1,7 @@
-import express, { Request, Response } from 'express';
+// import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
+import * as express from 'express';
+// import * as express.Application from 'express';
 import { Product, ProductStore } from '../models/product';
 import { AuthStore } from '../middleware/auth';
 
@@ -61,7 +64,7 @@ const destroy = async (req: Request, res: Response) => {
   }
 };
 
-const productRoutes = (app: express.Application) => {
+const productRoutes = (app: express.Application): void => {
   app.get('/products', index);
   app.get('/products/:id', show);
   app.post('/products/create', auth.verifyAuthToken, create);
