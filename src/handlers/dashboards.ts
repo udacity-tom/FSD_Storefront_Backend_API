@@ -5,9 +5,7 @@ import { DashboardQueries } from '../services/dashboard';
 const dashboardQueries = new DashboardQueries();
 
 const topFiveProducts = async (req: Request, res: Response) => {
-  //   console.log('in topFiveProducts');
   try {
-    // console.log('in topFiveProducts');
     const products = await dashboardQueries.popularProducts();
     res.json(products);
   } catch (err) {
