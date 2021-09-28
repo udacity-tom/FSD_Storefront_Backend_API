@@ -70,4 +70,4 @@ INSERT INTO orders (
     'active', 
     '5'
     );
-ALTER SEQUENCE orders_id_seq RESTART WITH 6;
+ALTER SEQUENCE orders_id_seq RESTART WITH 9;

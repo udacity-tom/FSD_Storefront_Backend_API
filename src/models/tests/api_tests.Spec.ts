@@ -143,7 +143,7 @@ describe('Testing Storefront Backend API', () => {
         expect(result).toBeDefined();
       });
       it('checks products delete method exists', () => {
-        expect(user.delete).toBeDefined();
+        expect(product.delete).toBeDefined();
       });
 
       it('checks /products/:id/delete exists', async () => {
@@ -151,9 +151,100 @@ describe('Testing Storefront Backend API', () => {
           .get('/products')
           .set('Authorization', 'Bearer ' + token);
         //   console.log('result is ', result);
-        console.log('setup value is ', setup.body.length);
+        // console.log('setup value is ', setup.body.length);
         const result = await request
           .delete(`/products/${setup.body.length}/delete`) //setup.body.length == 7
+          .set('Authorization', 'Bearer ' + token);
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+    });
+    describe('Tests Orders endpoints exist and are responsive', () => {
+      it('checks orders index method exists', () => {
+        expect(order.index).toBeDefined();
+      });
+      it('checks /orders exists', async () => {
+        const result = await request
+          .get('/orders')
+          .set('Authorization', 'Bearer ' + token);
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks orders show method exists', async () => {
+        expect(order.show).toBeDefined();
+      });
+      it('checks /orders/:oid exists', async () => {
+        const result = await request
+          .get('/orders/2')
+          .set('Authorization', 'Bearer ' + token);
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks orders showUserOrders method exists', async () => {
+        expect(order.showUserOrders).toBeDefined();
+      });
+      it('checks /users/:id/orders/ exists', async () => {
+        const result = await request
+          .get('/users/2/orders/')
+          .set('Authorization', 'Bearer ' + token);
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks orders showOrder method exists', async () => {
+        expect(order.showOrder).toBeDefined();
+      });
+      it('checks /users/:id/orders/:oid exists', async () => {
+        const result = await request
+          .get('/users/2/orders/4')
+          .set('Authorization', 'Bearer ' + token);
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+
+      it('checks orders create method exists', () => {
+        expect(order.create).toBeDefined();
+      });
+      it('checks /orders/create exists', async () => {
+        const result = await request
+          .post('/users/2/orders/create')
+          .set('Authorization', 'Bearer ' + token)
+          .set('Accept', 'application/json');
+        console.log('result.body is ', result.body);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks order addProduct method exists', () => {
+        expect(order.addProduct).toBeDefined();
+      });
+      it('checks /users/:id/orders/:oid/add-product', async () => {
+        const result = await request
+          .post('/users/2/orders/5/add-product')
+          .set('Authorization', 'Bearer ' + token)
+          .send({
+            id: '2',
+            quantity: '50'
+          });
+        console.log('result.body is ', result.body);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks orders delete method exists', () => {
+        expect(order.delete).toBeDefined();
+      });
+
+      it('checks /orders/:id/delete exists', async () => {
+        const setup = await request
+          .get('/orders')
+          .set('Authorization', 'Bearer ' + token);
+        //   console.log('result is ', result);
+        console.log('setup value is ', setup.body.length);
+        const result = await request
+          .delete(`/users/3/orders/${setup.body.length}`) //setup.body.length == 7
           .set('Authorization', 'Bearer ' + token);
         //   console.log('result is ', result);
         expect(result.status).toBe(200);
