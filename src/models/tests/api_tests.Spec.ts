@@ -4,11 +4,12 @@ import { User, UserStore } from '../user';
 import { Order, OrderStore } from '../order';
 import { Product, ProductStore } from '../product';
 import { AuthStore } from '../../middleware/auth';
-import { response } from 'express';
+import { DashboardQueries } from '../../services/dashboard';
 
 const user = new UserStore();
 const order = new OrderStore();
 const product = new ProductStore();
+const service = new DashboardQueries();
 const request = supertest(app);
 //token for user 2
 const token2 =
@@ -251,6 +252,36 @@ describe('Testing Storefront Backend API', () => {
         expect(result).toBeDefined();
       });
     });
+    describe('Tests service endpoints exist and are responsive', () => {
+      it('checks service topFiveProducts method exists', () => {
+        expect(service.popularProducts).toBeDefined();
+      });
+      it('checks /products/info/top-5-products exists', async () => {
+        const result = await request.get('/products/info/top-5-products');
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks service productsByCategory method exists', async () => {
+        expect(service.productsByCategory).toBeDefined();
+      });
+      it('checks /products/category/:category exists', async () => {
+        const result = await request.get('/products/category/stationary');
+        //   console.log('result is ', result);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+      it('checks service userOrdersCompleted method exists', async () => {
+        expect(order.showUserOrders).toBeDefined();
+      });
+      it('checks /users/:id/orders/complete/all exists', async () => {
+        const result = await request
+          .get('/users/2/orders/complete/all')
+          .set('Authorization', 'Bearer ' + token);
+        expect(result.status).toBe(200);
+        expect(result).toBeDefined();
+      });
+    });
     describe('Tests User database exist and are responsive', () => {
       it('checks the users.index() method but returns 401, JWT not attached', async () => {
         const response = await request.get('/users');
@@ -261,28 +292,23 @@ describe('Testing Storefront Backend API', () => {
         const result = await request
           .get('/users')
           .set('Authorization', 'Bearer ' + token);
-        //   console.log('result is ', result);
         expect(result.status).toBe(200);
         expect(result.body.length).toBe(5);
-        //   expect(result).toBe
       });
       it('get /users/2 should return only user with id=2 with JWT', async () => {
         const result = await request
           .get('/users/2')
           .set('Authorization', 'Bearer ' + token);
-        //   console.log('result is ', result);
         expect(result.status).toBe(200);
         expect(result.body.id).toBe(2);
         expect(result.body.username).toBe('Hella');
         expect(result.body.firstname).toBe('Helen');
         expect(result.body.lastname).toBe('Batrib');
-        //   expect(result).toBe
       });
       it('post /users/create should create new user with JWT', async () => {
         const result = await request
           .get('/users/2')
           .set('Authorization', 'Bearer ' + token);
-        //   console.log('result is ', result);
         expect(result.status).toBe(200);
         expect(result.body.id).toBe(2);
         expect(result.body.username).toBe('Hella');
