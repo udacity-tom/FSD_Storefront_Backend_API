@@ -76,9 +76,8 @@ export class AuthStore {
       const jwtToken: string = authorisationHeader.split(' ')[1];
       const decoded = jwt.verify(jwtToken, tokenSecret);
       if (decoded) {
-        console.log('jwt decoded');
+        next();
       }
-      next();
     } catch (err) {
       res.status(401).json({ message: 'Invalid Token!' });
     }
