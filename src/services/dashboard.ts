@@ -30,6 +30,7 @@ export class DashboardQueries {
       throw new Error(`Something went wrong! There is no category ${category}`);
     }
   }
+
   async userOrdersCompleted(uid: string): Promise<Order[]> {
     try {
       const sql =
@@ -39,7 +40,7 @@ export class DashboardQueries {
       return results.rows;
     } catch (err) {
       throw new Error(
-        `Something went wront! No complete orders for user id = ${uid}`
+        `Something went wrong! No complete orders for user id = ${uid}`
       );
     }
   }

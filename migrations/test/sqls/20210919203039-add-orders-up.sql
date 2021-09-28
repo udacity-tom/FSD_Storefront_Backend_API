@@ -13,7 +13,7 @@ INSERT INTO orders (
     user_id
     ) VALUES (
     2, 
-    'active', 
+    'complete', 
     '1'
     );
     INSERT INTO orders (
