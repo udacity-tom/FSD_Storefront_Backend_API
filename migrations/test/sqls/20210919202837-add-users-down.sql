@@ -1,1 +1,1 @@
-/* Replace with your SQL commands */
+/* Entries will be deleted on table drop */

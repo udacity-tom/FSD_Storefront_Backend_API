@@ -67,4 +67,4 @@ password
 'Burk', 
 '$2b$10$K/JK3x0..R.PeLZSuZMrHuRzgIP2D8RPxzOXSTMoDqxaigC6XxFum'
 );
--- ALTER SEQUENCE users.id RESTART WITH 6;
+ALTER SEQUENCE users_id_seq RESTART WITH 6;

@@ -4,7 +4,7 @@ INSERT INTO orders (
     user_id
     ) VALUES (
     1, 
-    'active', 
+    'complete', 
     '1'
     );
     INSERT INTO orders (
@@ -31,7 +31,7 @@ INSERT INTO orders (
     user_id
     ) VALUES (
     4, 
-    'active', 
+    'complete', 
     '2'
     );
     INSERT INTO orders (
@@ -42,6 +42,32 @@ INSERT INTO orders (
     5, 
     'active', 
     '2'
-);\n
-ALTER SEQUENCE id RESTART WITH 6;
--- ALTER SEQUENCE id_seq RESTART WITH 6;
+    );
+    INSERT INTO orders (
+    id, 
+    status, 
+    user_id
+    ) VALUES (
+    6, 
+    'active', 
+    '5'
+    );
+    INSERT INTO orders (
+    id, 
+    status, 
+    user_id
+    ) VALUES (
+    7, 
+    'complete', 
+    '5'
+    );
+    INSERT INTO orders (
+    id, 
+    status, 
+    user_id
+    ) VALUES (
+    8, 
+    'active', 
+    '5'
+    );
+ALTER SEQUENCE orders_id_seq RESTART WITH 6;
