@@ -15,15 +15,18 @@ const request = supertest(app);
 
 let token: string;
 
+beforeAll(async () => {
+  const result = await request
+    .post('/users/authenticate')
+    .send({
+      username: 'Bill',
+      password: 'password'
+    })
+    .set('Accept', 'application/json');
+  token = result.text;
+});
+
 describe('Testing Storefront Backend API', () => {
-  describe('Creates JWT token for testing purposes', () => {
-    it('checks auth.authenticate() function exists ', async () => {
-      const username = 'Bill';
-      const password = 'password';
-      token = await auth.authenticate(username, password);
-      expect(token).toBeDefined();
-    });
-  });
   describe('Tests API endpoints', () => {
     describe('Tests User endpoints exist and are responsive', () => {
       it('checks users index method exists', () => {
