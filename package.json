@@ -1,7 +1,7 @@
 {
   "name": "storefront_backend",
   "version": "0.1.0",
-  "description": "",
+  "description": "API backend with various endpoints for simple storefront",
   "main": "server.ts",
   "scripts": {
     "start": "node src/server.ts",
@@ -12,7 +12,9 @@
     "create-test": "npm run build && npm run create-testdb-up && db-migrate --env test up && ENV=test jasmine && npm run create-testdb-down",
     "create-testdb-up": "db-migrate up:setup && db-migrate --env test up && db-migrate --env test up:test",
     "create-testdb-down": "db-migrate --env test down:test && db-migrate --env test down && db-migrate down:setup",
-    "create-test-reset": "db-migrate --env test reset:test && db-migrate --env test reset && db-migrate reset:setup"
+    "create-test-reset": "db-migrate --env test reset:test && db-migrate --env test reset && db-migrate reset:setup",
+    "db-create-up": "db-migrate up",
+    "db-create-down": "db-migrate -c 4 down"
   },
   "author": "Udacity",
   "license": "ISC",
