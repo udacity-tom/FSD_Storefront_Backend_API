@@ -53,13 +53,13 @@ export class OrderStore {
     //checks for orders for users-> then returns products in order
     try {
       const currentOpenOrders = await this.showUserOrders(id);
-      const hasOpenOrder = currentOpenOrders.filter(order => {
+      const hasOrder = currentOpenOrders.filter(order => {
         if (order.id == Number(oid)) {
           return true;
         }
       });
-      if (hasOpenOrder.length == 0) {
-        return `User with ID = ${id} doesn't have an order with Order Id = ${oid}`;
+      if (hasOrder.length == 0) {
+        return `User with ID = ${id} doesn't have an order with Order ID = ${oid}`;
       }
       const sql = 'SELECT * FROM order_products WHERE order_id=($1);';
       const conn = await client.connect();
@@ -82,7 +82,9 @@ export class OrderStore {
       conn.release();
       return result.rows[0];
     } catch (err) {
-      throw new Error(`There was an error with order for ${id}. Error: ${err}`);
+      throw new Error(
+        `There was an error with creating order for User ID = ${id}. Error: ${err}`
+      );
     }
   }
 
@@ -130,8 +132,6 @@ export class OrderStore {
   ): Promise<Order | string> {
     try {
       let orderIdTrue, orderOpen;
-      const sql =
-        'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *;';
       const currentOpenOrders = await this.showUserOrders(id); //List of all orders for user_id
       currentOpenOrders.filter(order => {
         if (order.id == Number(orderId)) {
@@ -147,6 +147,8 @@ export class OrderStore {
       if (!orderOpen) {
         return `Order id ${orderId} has been closed! Order status is marked as closed`;
       }
+      const sql =
+        'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *;';
       const conn = await client.connect();
       const result = await conn.query(sql, [quantity, orderId, productId]);
       conn.release();

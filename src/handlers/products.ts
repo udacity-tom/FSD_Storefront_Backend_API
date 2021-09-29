@@ -41,14 +41,18 @@ const create = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
-  const updatedProductDetails: Product = {
-    name: req.body.name,
-    price: Number(req.body.price),
-    category: req.body.category,
-    id: req.body.id
-  };
+  const currentProductDetails = await productStore.show(req.params.id);
   try {
-    const updatedProduct = await productStore.update(updatedProductDetails);
+    if (req.body.name) {
+      currentProductDetails.name = req.body.name;
+    }
+    if (req.body.price) {
+      currentProductDetails.price = req.body.price;
+    }
+    if (req.body.category) {
+      currentProductDetails.category = req.body.category;
+    }
+    const updatedProduct = await productStore.update(currentProductDetails);
     res.json(updatedProduct);
   } catch (err) {
     res.status(400).json(err);
@@ -68,8 +72,8 @@ const productRoutes = (app: express.Application): void => {
   app.get('/products', index);
   app.get('/products/:id', show);
   app.post('/products/create', auth.verifyAuthToken, create);
-  app.post('/products/:id/update', auth.verifyAuthToken, update);
-  app.delete('/products/:id/delete', auth.verifyAuthToken, destroy);
+  app.put('/products/:id', auth.verifyAuthToken, update);
+  app.delete('/products/:id', auth.verifyAuthToken, destroy);
 };
 
 export default productRoutes;

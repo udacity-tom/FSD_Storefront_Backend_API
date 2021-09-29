@@ -93,8 +93,8 @@ const userRoutes = (app: express.Application): void => {
   app.get('/users/:id', auth.verifyAuthToken, show);
   app.post('/users/create', auth.verifyAuthToken, checkUserName, create); // == new user & return JWT
   app.post('/users/authenticate', authenticate); // == login & issue new JWT
-  app.post('/users/:id/update', auth.verifyAuthToken, update);
-  app.delete('/users/:id/delete', auth.verifyAuthToken, destroy);
+  app.put('/users/:id', auth.verifyAuthToken, update);
+  app.delete('/users/:id', auth.verifyAuthToken, destroy);
 };
 
 export default userRoutes;

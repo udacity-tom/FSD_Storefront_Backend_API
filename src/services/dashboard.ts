@@ -13,7 +13,7 @@ export class DashboardQueries {
           return item;
         }
       });
-
+      conn.release();
       return filtered;
     } catch (err) {
       throw new Error(`Something went wrong!`);
@@ -25,6 +25,7 @@ export class DashboardQueries {
       const sql = 'SELECT * FROM products WHERE products.category = ($1);';
       const conn = await client.connect();
       const results = await conn.query(sql, [category]);
+      conn.release();
       return results.rows;
     } catch (err) {
       throw new Error(`Something went wrong! There is no category ${category}`);
@@ -37,6 +38,7 @@ export class DashboardQueries {
         "SELECT * FROM orders WHERE user_id= ($1) AND orders.status='complete';";
       const conn = await client.connect();
       const results = await conn.query(sql, [uid]);
+      conn.release();
       return results.rows;
     } catch (err) {
       throw new Error(

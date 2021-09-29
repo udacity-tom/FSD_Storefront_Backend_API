@@ -24,6 +24,18 @@ export class UserStore {
     }
   }
 
+  async show(id: string): Promise<User> {
+    try {
+      const sql = 'SELECT * FROM users WHERE id=($1);';
+      const conn = await client.connect();
+      const result = await conn.query(sql, [id]);
+      conn.release();
+      return result.rows[0];
+    } catch (err) {
+      throw new Error(`There is no user with ID ${id}. Error: ${err}`);
+    }
+  }
+
   async create(user: User): Promise<User> {
     try {
       user.password = await auth.hashPassword(user.password);
@@ -43,18 +55,6 @@ export class UserStore {
       throw new Error(
         `Something went wrong, try again. Duplicate user account? Error: ${err}`
       );
-    }
-  }
-
-  async show(id: string): Promise<User> {
-    try {
-      const sql = 'SELECT * FROM users WHERE id=($1);';
-      const conn = await client.connect();
-      const result = await conn.query(sql, [id]);
-      conn.release();
-      return result.rows[0];
-    } catch (err) {
-      throw new Error(`There is no user with ID ${id}. Error: ${err}`);
     }
   }
 
@@ -85,14 +85,15 @@ export class UserStore {
       const feedback = await this.show(id);
       const sql = 'DELETE FROM users WHERE id=($1);';
       const conn = await client.connect();
-
       const result = await conn.query(sql, [id]);
       conn.release();
       return `${
         result.rows.length == 0 ? 'Success!' : 'oops'
-      } User with id = ${id} was deleted, Username: ${feedback.username}, (${
-        feedback.firstname
-      } ${feedback.lastname})`;
+      } User with id = ${id} was ${
+        result.rows.length == 0 ? 'not ' : ''
+      }deleted, Username: ${feedback.username}, (${feedback.firstname} ${
+        feedback.lastname
+      })`;
     } catch (err) {
       throw new Error(`Cannot delete user with id = ${id}`);
     }

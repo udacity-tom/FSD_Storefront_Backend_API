@@ -56,8 +56,10 @@ const create = async (req: Request, res: Response) => {
 
 const destroy = async (req: Request, res: Response) => {
   try {
-    const oidToDelete = req.params.oid;
-    const orderToDelete = await orderStore.delete(req.params.id, oidToDelete);
+    const orderToDelete = await orderStore.delete(
+      req.params.id,
+      req.params.oid
+    );
     res.json(orderToDelete);
   } catch (err) {
     res.status(400).send(err);
@@ -67,10 +69,10 @@ const destroy = async (req: Request, res: Response) => {
 const addProduct = async (req: Request, res: Response) => {
   try {
     const addProducts = await orderStore.addProduct(
-      req.params.id,
+      req.params.id, //user id
       req.body.quantity,
       req.params.oid,
-      req.body.id
+      req.body.id //product id
     );
     res.json(addProducts);
   } catch (err) {
@@ -81,7 +83,7 @@ const addProduct = async (req: Request, res: Response) => {
 const orderRoutes = (app: express.Application): void => {
   app.get('/orders', auth.verifyAuthToken, index); //show all orders
   app.get('/orders/:oid', auth.verifyAuthToken, show); //show only one order
-  app.get('/users/:id/orders/', auth.verifyAuthToken, showUserOrders); //show current orders for user (id)
+  app.get('/users/:id/orders', auth.verifyAuthToken, showUserOrders); //show current orders for user (id)
   app.get('/users/:id/orders/:oid', auth.verifyAuthToken, showOrder); //shows details of order for user (id) with order (oid)
   app.post('/users/:id/orders/create', auth.verifyAuthToken, create);
   app.post(
