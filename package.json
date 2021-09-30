@@ -1,22 +1,23 @@
 {
   "name": "storefront_backend",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "API backend with various endpoints for simple storefront",
   "main": "server.ts",
   "scripts": {
     "start": "node src/server.ts",
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
+    "watch-test": "ENV=test tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
     "build": "npx tsc",
     "test": "npm run build && ENV=test jasmine",
     "tsc": "tsc",
     "create-test": "npm run build && npm run create-testdb-up && ENV=test jasmine && npm run create-testdb-down",
-    "create-testdb-up": "db-migrate up:setup && db-migrate --env test up && db-migrate --env test up:test",
-    "create-testdb-down": "db-migrate --env test down:test && db-migrate --env test down && db-migrate down:setup",
+    "create-test-up": "db-migrate up:setup && db-migrate --env test up && db-migrate --env test up:test",
+    "create-test-down": "db-migrate --env test down:test && db-migrate -c 4 --env test down && db-migrate down:setup",
     "create-test-reset": "db-migrate --env test reset:test && db-migrate --env test reset && db-migrate reset:setup",
     "db-create-up": "db-migrate up",
     "db-create-down": "db-migrate -c 4 down"
   },
-  "author": "Udacity",
+  "author": "TSmith",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
