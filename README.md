@@ -1,54 +1,166 @@
-# Storefront Backend Project
+# FSD Storefront Backend API
 
-## Getting Started
+Full Stack Developer Nanodegree, create a node based API to support a frontend store website.
 
-This repo contains a basic Node and Express app to get you started in constructing an API. To get started, clone this repo and run `yarn` in your terminal at the project root.
 
-## Required Technologies
-Your application must make use of the following libraries:
-- Postgres for the database
-- Node/Express for the application logic
-- dotenv from npm for managing environment variables
-- db-migrate from npm for migrations
-- jsonwebtoken from npm for working with JWTs
-- jasmine from npm for testing
+## Introduction/API Functionality
 
-## Steps to Completion
+An Express based RESTful API design was used to interface to a CRUD backend to access a Postgres database for data storage and retrieval.
+Using REST Endpoints with JWT tokens to provide a stateless authenticated access to retreiving and storing data in persistent storage.
 
-### 1. Plan to Meet Requirements
+This API provides multiple endpoints to 
+- Browse, review, create, store, update and delete Products 
+- Review, create, delete, show details and add products to Orders using a shopping basket
+- List, show individual, register (create), login & authenticate, update and delete Users
 
-In this repo there is a `REQUIREMENTS.md` document which outlines what this API needs to supply for the frontend, as well as the agreed upon data shapes to be passed between front and backend. This is much like a document you might come across in real life when building or extending an API. 
+The project is written in Typescript, Node/Express for the application logic, dotenv for environmental variables, db-migrate for migrations, Jsonwebtoken for JWT and Jasmine for testing.
 
-Your first task is to read the requirements and update the document with the following:
-- Determine the RESTful route for each endpoint listed. Add the RESTful route and HTTP verb to the document so that the frontend developer can begin to build their fetch requests.    
-**Example**: A SHOW route: 'blogs/:id' [GET] 
+Middleware was written to verify JWT validity and check for unique usernames at account creation.
 
-- Design the Postgres database tables based off the data shape requirements. Add to the requirements document the database tables and columns being sure to mark foreign keys.   
-**Example**: You can format this however you like but these types of information should be provided
-Table: Books (id:varchar, title:varchar, author:varchar, published_year:varchar, publisher_id:string[foreign key to publishers table], pages:number)
+Using npm, scripts were written to create test databases and run Jasmine test specs.
 
-**NOTE** It is important to remember that there might not be a one to one ratio between data shapes and database tables. Data shapes only outline the structure of objects being passed between frontend and API, the database may need multiple tables to store a single shape. 
 
-### 2.  DB Creation and Migrations
+## Installation, Environment Setup
 
-Now that you have the structure of the databse outlined, it is time to create the database and migrations. Add the npm packages dotenv and db-migrate that we used in the course and setup your Postgres database. If you get stuck, you can always revisit the database lesson for a reminder. 
+Clone the repository and make sure node (min v 12.13.1) and npm are installed in your local dev environment.
+Install the relevant packages with the [node package manager](https://docs.npmjs.com/).
+After cloning, run the following script from a terminal in the cloned directory: 
 
-You must also ensure that any sensitive information is hashed with bcrypt. If any passwords are found in plain text in your application it will not pass.
+* `npm i`
 
-### 3. Models
+This will install the necessary packages and dependencies based on the supplied ``package.json``.
 
-Create the models for each database table. The methods in each model should map to the endpoints in `REQUIREMENTS.md`. Remember that these models should all have test suites and mocks.
+## Setup PostgresSQL
+For the entire project I have used [PostGresSQL](https://www.postgresql.org/). 
+Download a copy and have it already installed on your system before you complete the next stage.
 
-### 4. Express Handlers
+The following environment variables ``.env`` are required for Postgres and the subsequent project to function correctly.
 
-Set up the Express handlers to route incoming requests to the correct model method. Make sure that the endpoints you create match up with the enpoints listed in `REQUIREMENTS.md`. Endpoints must have tests and be CORS enabled. 
+```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+```
 
-### 5. JWTs
+Once these are set, start an instance of Postgres, ensure Postgres is started on port 5432.
 
-Add JWT functionality as shown in the course. Make sure that JWTs are required for the routes listed in `REQUIUREMENTS.md`.
+### Setup the required databases
 
-### 6. QA and `README.md`
+In order to use the API you must pre-configure the initial database.
+To do so access the `psql` prompt as ``postgres`` of the installed Postgres database and enter the following commands at the prompt:
 
-Before submitting, make sure that your project is complete with a `README.md`. Your `README.md` must include instructions for setting up and running your project including how you setup, run, and connect to your database. 
+```
+CREATE DATABASE storefront_dev;
+CREATE USER storefont_admin WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE storefront_dev TO storefront_admin;
+```
 
-Before submitting your project, spin it up and test each endpoint. If each one responds with data that matches the data shapes from the `REQUIREMENTS.md`, it is ready for submission!
+### Setting the environmental variables
+In the root directory of the cloned repository create a file with the name ``.env`` .
+Copy the following into the file:
+
+```
+    POSTGRES_HOST=127.0.0.1  //or whereever the Postgres database is located
+    
+    POSTGRES_DB=storefront_dev
+    POSTGRES_USER_DEV=storefront_admin
+    POSTGRES_PASSWORD_DEV=password
+    
+    POSTGRES_TEST_DB=storefront_test
+    POSTGRES_USER_TEST=storefront_admin
+    POSTGRES_PASSWORD_TEST=password
+    
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=password
+    
+    ENV=dev
+
+    BCRYPT_PASSWORD=go-and-take-five-times-orange
+    SALT_ROUNDS=10
+    TOKEN_SECRET=Carny-LON*gorange
+```
+The environmental variables can be adjusted dependent on your specific needs, but the given variables will automatic Jasmine testing.
+
+## Running the Automatic Test
+
+To run the fully automated tests access a terminal in the repo directory and key in the following command:
+```
+npm run create-test
+```
+upon execution, the script will
+- run the build script (```npm run build```), 
+- create a test database (```storefront_test```) within the postgres instance using the ```db-migrate up:setup``` command,
+- add the database scheme (as outlined in the REQUIREMENTS.md) to the test database using ```db-migrate --env test up```,
+- populate the test database scheme with data using ```db-migrate --env test up:test```,
+- run the 46 Jasmine tests using ```ENV=test jasmine```, 
+- reverse the up migration and remove the database scheme and database using down mgirations.
+
+## Interactively Running the Tests
+To interactively test the provided test data using something like [Postman](https://www.postman.com/) follow these instructions
+
+Access a terminal in the repo directory and key in the following command:
+```
+npm run create-test-up
+```
+Then to bring up the watch mode: 
+```
+npm run watch-test
+```
+When finished run the down migration for the test database with: 
+```
+npm run create-test-down
+```
+### Accessing the API/Endpoint Review
+Accessing the API is simple using something like [Postman](https://www.postman.com/).
+But the API is also available via a browser. ````http://127.0.0.1:3002/````
+will access the landing page where a list of the implemented API Endpoints is viewable.
+All unauthenticated links are accessible from a regular browser e.g. ```http://127.0.0.1:3002/products```
+
+### Resetting the migrations
+
+Should the data migrations get out of sync (it happens!) run:
+```
+npm run create-test-reset
+```
+And this will run the ``db-migrate`` reset commands for all tables and schemas and will correct any postgres scheme problems.
+It will be necessary to re-run the 'up' migrations again.
+
+### Running the Jasmine Tests in interactive mode
+To run the jasmine tests whilst in the interactive mode use the following command: 
+```
+npm run test
+```
+The tests will run with one failure unless the ``run watch-test``script is aborted aforehand. 
+```
+- Uncaught exception: Error: listen EADDRINUSE: address already in use :::3002
+```
+
+### API testing environments
+This project was tested independently in a fresh Ubuntu VM using the setup instructions included in this README.md
+
+
+## Technologies Used
+
+- Node (asynchronous endpoints for API access)
+- Express (for creating endpoints, routing, and serving files)
+- TypeScript throughout the API
+- Javascript (async, express, middleware, etc in a modular design)
+- Jasmine (for JS testing)
+- Jason Web Token (JWT) for stateless interactions
+- Basic Error handling
+- Misc. middle ware, checking username, handling authentication
+
+
+
+## About Udacity's Full Stack Javascript Developer Nanodegree
+
+Students who graduate from the program will be able to:
+• Build client-side experiences and applications using Angular, collecting data from users and from
+backends, providing rich user interactions and organizing code and data.
+• Build server-side executed code with TypeScript and integrate with 3rd party code such as
+Angular’s Server Side Rendering.
+• Leverage Express.js to architect and build APIs that power dynamic functionality and to generate
+and supply data to web and mobile clients.
+• Persist data to a database, query and retrieve data, and pass this data all the way through to
+various client devices.
+
+ [Udacity Full Stack Javascript Developer Nanodegree](https://www.udacity.com/course/full-stack-javascript-developer-nanodegree--nd0067)
