@@ -10,7 +10,7 @@
     "build": "npx tsc",
     "test": "npm run build && ENV=test jasmine",
     "tsc": "tsc",
-    "create-test": "npm run build && npm run create-testdb-up && ENV=test jasmine && npm run create-testdb-down",
+    "create-test": "npm run build && npm run create-test-up && ENV=test jasmine && npm run create-test-down",
     "create-test-up": "db-migrate up:setup && db-migrate --env test up && db-migrate --env test up:test",
     "create-test-down": "db-migrate --env test down:test && db-migrate -c 4 --env test down && db-migrate down:setup",
     "create-test-reset": "db-migrate --env test reset:test && db-migrate --env test reset && db-migrate reset:setup",
