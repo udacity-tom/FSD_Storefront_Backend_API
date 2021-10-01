@@ -47,11 +47,62 @@ describe('Tests User endpoints exist and are responsive', () => {
     expect(result.body.length).toBe(5);
   });
 
+  it('checks the output of the SQL logic for /users', async () => {
+    const userArray = [
+      {
+        id: 1,
+        username: 'Barney',
+        firstname: 'Benny',
+        lastname: 'Scholpferb',
+        password: '%%$$$$$9adkaj'
+      },
+      {
+        id: 2,
+        username: 'Hella',
+        firstname: 'Helen',
+        lastname: 'Batrib',
+        password: '$2b$10$vdxOw56kdXTjuh.v8IvlPOF1fu3yvleynLYYbkJw8qPEBeIVWCuSG'
+      },
+      {
+        id: 3,
+        username: 'Jakey',
+        firstname: 'Jake',
+        lastname: 'Grossenpfiff',
+        password: '$2b$10$Nwz5HSm8IGxvPBKrtWFmHOEfMqoIlwI6dBB7DMyFalZISMTSqf.MW'
+      },
+      {
+        id: 4,
+        username: 'Will',
+        firstname: 'William',
+        lastname: 'Burk',
+        password: '$2b$10$6Scfn2HTUNtQKStr6G1meeOcWkbCoy2kcQdflcbR9rJ2105GfQogG'
+      },
+      {
+        id: 5,
+        username: 'Bill',
+        firstname: 'William',
+        lastname: 'Burk',
+        password: '$2b$10$K/JK3x0..R.PeLZSuZMrHuRzgIP2D8RPxzOXSTMoDqxaigC6XxFum'
+      }
+    ];
+    const result = await request
+      .get('/users')
+      .set('Authorization', 'Bearer ' + token);
+    expect(result.body).toEqual(userArray);
+  });
+
   it('checks users show method exists', async () => {
     expect(user.show).toBeDefined();
   });
 
-  it('checks /users/:id exists', async () => {
+  it('checks /users/:id exists and checks SQL returns user id=2', async () => {
+    const user2 = {
+      id: 2,
+      username: 'Hella',
+      firstname: 'Helen',
+      lastname: 'Batrib',
+      password: '$2b$10$vdxOw56kdXTjuh.v8IvlPOF1fu3yvleynLYYbkJw8qPEBeIVWCuSG'
+    };
     const result = await request
       .get('/users/2')
       .set('Authorization', 'Bearer ' + token);
@@ -61,12 +112,13 @@ describe('Tests User endpoints exist and are responsive', () => {
     expect(result.body.username).toEqual('Hella');
     expect(result.body.firstname).toEqual('Helen');
     expect(result.body.lastname).toEqual('Batrib');
+    expect(result.body).toEqual(user2);
   });
 
   it('checks users create method exists', () => {
     expect(user.create).toBeDefined();
   });
-  it('checks /users/create is created correctly', async () => {
+  it('checks /users/create is created correctly and SQL returns new user', async () => {
     const result = await request
       .post('/users/create')
       .set('Authorization', 'Bearer ' + token)
@@ -91,12 +143,17 @@ describe('Tests User endpoints exist and are responsive', () => {
     expect(user.update).toBeDefined();
   });
 
-  it('checks /users/2 update exists', async () => {
+  it('checks put /users/2 update exists and SQL updates DB', async () => {
+    const userUpdate = {
+      username: 'Hellana'
+    };
     const result = await request
       .put('/users/2')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', 'Bearer ' + token)
+      .send(userUpdate);
     expect(result.status).toBe(200);
     expect(result).toBeDefined();
+    expect(result.body.username).toEqual('Hellana');
   });
 
   it('checks users delete method exists', () => {
@@ -113,5 +170,10 @@ describe('Tests User endpoints exist and are responsive', () => {
       .set('Authorization', 'Bearer ' + token);
     expect(result.status).toBe(200);
     expect(result).toBeDefined();
+
+    const testDelete = await request
+    .get('/users')
+    .set('Authorization', 'Bearer ' + token);
+    expect(testDelete.body.length).toEqual(setup.body.length-1);
   });
 });
