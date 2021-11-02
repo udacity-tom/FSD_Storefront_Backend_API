@@ -118,7 +118,7 @@ describe('Tests User endpoints exist and are responsive', () => {
   it('checks users create method exists', () => {
     expect(user.create).toBeDefined();
   });
-  it('checks /users/create is created correctly and SQL returns new user', async () => {
+  it('checks /users/create is created correctly and SQL returns new user and JWT', async () => {
     const result = await request
       .post('/users/create')
       .set('Authorization', 'Bearer ' + token)
@@ -156,7 +156,7 @@ describe('Tests User endpoints exist and are responsive', () => {
     expect(result.body.username).toEqual('Hellana');
   });
 
-  it('checks users delete method exists', () => {
+  it('checks users delete method and SQL has deleted order', () => {
     expect(user.delete).toBeDefined();
   });
 
@@ -172,8 +172,8 @@ describe('Tests User endpoints exist and are responsive', () => {
     expect(result).toBeDefined();
 
     const testDelete = await request
-    .get('/users')
-    .set('Authorization', 'Bearer ' + token);
-    expect(testDelete.body.length).toEqual(setup.body.length-1);
+      .get('/users')
+      .set('Authorization', 'Bearer ' + token);
+    expect(testDelete.body.length).toEqual(setup.body.length - 1);
   });
 });
